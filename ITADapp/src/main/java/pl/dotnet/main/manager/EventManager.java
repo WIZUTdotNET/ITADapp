@@ -2,10 +2,10 @@ package pl.dotnet.main.manager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.dotnet.main.model.Event;
-import pl.dotnet.main.repository.EventRepository;
+import pl.dotnet.main.dao.model.Event;
+import pl.dotnet.main.dao.repository.EventRepository;
 
-import javax.swing.text.html.Option;
+import java.util.Optional;
 
 @Service
 public class EventManager {
@@ -17,8 +17,19 @@ public class EventManager {
         this.eventRepository = eventRepository;
     }
 
-    public Optional<Event> getAllEvent() {
+    public Iterable<Event> getAllEvent() {
         return eventRepository.findAll();
     }
 
+    public Optional<Event> findById(Long id) {
+        return eventRepository.findById(id);
+    }
+
+    public Event save(Event event) {
+        return eventRepository.save(event);
+    }
+
+    public void deleteById(Long id) {
+        eventRepository.deleteById(id);
+    }
 }

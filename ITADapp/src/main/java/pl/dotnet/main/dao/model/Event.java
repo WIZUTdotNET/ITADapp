@@ -1,4 +1,4 @@
-package pl.dotnet.main.model;
+package pl.dotnet.main.dao.model;
 
 import com.sun.istack.Nullable;
 import lombok.AllArgsConstructor;
