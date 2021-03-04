@@ -10,7 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
-import java.sql.Timestamp;
+import java.time.Instant;
 
 @Data
 @AllArgsConstructor
@@ -30,6 +30,9 @@ public class Event {
 
     // TODO: 03.03.2021 add owner
 
-    private Timestamp eventStartDate;
-    private Timestamp eventEndDate;
+    @Nullable
+    private Instant eventStartDate;
+
+    @Nullable
+    private Instant eventEndDate;
 }

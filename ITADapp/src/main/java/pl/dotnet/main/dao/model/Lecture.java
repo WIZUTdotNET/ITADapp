@@ -4,11 +4,10 @@ import com.sun.istack.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.dotnet.main.dao.model.Event;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.sql.Timestamp;
+import java.time.Instant;
 
 @Data
 @AllArgsConstructor
@@ -26,8 +25,8 @@ public class Lecture {
     @Nullable
     private String lectureDescription;
 
-    private Timestamp levtireStartDate;
-    private Timestamp levtireEndDate;
+    private Instant lectureStartDate;
+    private Instant lectureEndDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "eventID", referencedColumnName = "eventID")
