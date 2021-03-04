@@ -1,10 +1,44 @@
 package pl.dotnet.main.api;
 
-import pl.dotnet.main.dao.repository.EventRepository;
-import pl.dotnet.main.dao.repository.LectureRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import pl.dotnet.main.dao.model.Event;
+import pl.dotnet.main.manager.EventManager;
 
-public class ITADappAPI {
+import java.util.Optional;
 
-    private EventRepository eventRepository;
-    private LectureRepository lectureRepository;
+@RestController
+@RequestMapping("/api/event")
+public class EventAPI {
+    private final EventManager eventManager;
+
+    @Autowired
+    public EventAPI(EventManager eventManager) {
+        this.eventManager = eventManager;
+    }
+
+    @GetMapping("/all")
+    public Iterable<Event> getAll() {
+        return eventManager.findAll();
+    }
+
+    @GetMapping
+    public Optional<Event> getById(@RequestParam Long id) {
+        return eventManager.findById(id);
+    }
+
+    @PostMapping
+    public Event addEvent(@RequestBody Event event) {
+        return eventManager.save(event);
+    }
+
+    @PutMapping
+    public Event updateEvent(@RequestBody Event event) {
+        return eventManager.save(event);
+    }
+
+    @DeleteMapping
+    public void deleteEvent(@RequestParam Long id) {
+        eventManager.deleteById(id);
+    }
 }
