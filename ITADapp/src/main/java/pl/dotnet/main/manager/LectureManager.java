@@ -1,13 +1,15 @@
 package pl.dotnet.main.manager;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import pl.dotnet.main.dao.model.Lecture;
 import pl.dotnet.main.dao.repository.LectureRepository;
 
 import java.util.Optional;
 
+@Service
 public class LectureManager {
-    private LectureRepository lectureRepository;
+    private final LectureRepository lectureRepository;
 
     @Autowired
     public LectureManager(LectureRepository lectureRepository) {
