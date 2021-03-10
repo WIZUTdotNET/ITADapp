@@ -9,11 +9,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/lecture")
-public class LectureAPI {
+public class LectureController {
     private final LectureManager lectureManager;
 
     @Autowired
-    public LectureAPI(LectureManager lectureManager) {
+    public LectureController(LectureManager lectureManager) {
         this.lectureManager = lectureManager;
     }
 

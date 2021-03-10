@@ -9,11 +9,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/event")
-public class EventAPI {
+public class EventController {
     private final EventManager eventManager;
 
     @Autowired
-    public EventAPI(EventManager eventManager) {
+    public EventController(EventManager eventManager) {
         this.eventManager = eventManager;
     }
 
