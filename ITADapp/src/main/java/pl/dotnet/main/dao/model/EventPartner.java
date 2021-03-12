@@ -20,7 +20,7 @@ public class EventPartner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long eventPartnerId;
 
-    @NotEmpty()
+    @NotEmpty
     private String name;
 
     @NotNull
@@ -29,8 +29,6 @@ public class EventPartner {
     @Nullable
     private String profileImageURL;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "eventId")
-    private Event event;
-
+    @ManyToOne
+    private Event sponsoredEvent;
 }

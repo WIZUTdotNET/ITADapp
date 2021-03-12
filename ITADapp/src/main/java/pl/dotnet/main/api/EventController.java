@@ -22,9 +22,14 @@ public class EventController {
         return eventManager.findAll();
     }
 
-    @GetMapping
+    @GetMapping("/fingById")
     public Optional<Event> getById(@RequestParam Long id) {
         return eventManager.findById(id);
+    }
+
+    @GetMapping
+    public Optional<Event> getByName(@RequestParam String name) {
+        return eventManager.findByName(name);
     }
 
     @PostMapping

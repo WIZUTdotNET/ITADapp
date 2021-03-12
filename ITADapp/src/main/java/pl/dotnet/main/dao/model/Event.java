@@ -29,18 +29,27 @@ public class Event {
     private Instant startDate;
     private Instant endDate;
 
-    @OneToMany(mappedBy = "event")
-    private List<EventPartner> partners;
+    @NotNull
+    private Long availableTickets;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @NotNull
+    private Long bookedTickets;
+
+    @NotNull
+    private Long ticketPrice;
+
+    @ManyToOne
     private User owner;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
-    private List<User> moderators;
+    @OneToMany
+    private List<EventPartner> partners;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
-    private List<User> participants;
+    @OneToMany
+    private List<Lecture> lectures;
+
+    @ManyToMany
+    private List<User> registeredUsers;
+
+    @ManyToMany
+    private List<User> attendedUsers;
 }

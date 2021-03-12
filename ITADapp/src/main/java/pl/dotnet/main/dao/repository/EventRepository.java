@@ -12,10 +12,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Optional<Event> findByOwner(User user);
 
-    Optional<Event> findByModerators(User user);
-
-    Optional<Event> findByParticipants(User user);
-
     Optional<Event> findByName(String name);
 
     Optional<Event> findByStartDate(Instant date);

@@ -26,9 +26,8 @@ public class Speaker {
     private String surname;
 
     @NotNull
-    private String bio;
+    private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lectureId")
+    @ManyToOne
     private Lecture lecture;
 }

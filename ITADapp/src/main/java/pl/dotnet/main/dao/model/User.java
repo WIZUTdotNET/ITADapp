@@ -29,18 +29,12 @@ public class User {
     @Email
     private String email;
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany
     private List<Event> ownedEvents;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "eventId")
-    private List<Event> moderatedEvents;
+    @ManyToMany
+    private List<Event> registeredOnEvents;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "eventId")
+    @ManyToMany
     private List<Event> attendedEvents;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lectureId")
-    private List<Lecture> attendedLectures;
 }

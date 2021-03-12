@@ -29,13 +29,15 @@ public class Lecture {
     private Instant startDate;
     private Instant endDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "eventId", referencedColumnName = "eventId")
+    @NotNull
+    private Long availableSeats;
+
+    @NotNull
+    private Long takenSeats;
+
+    @ManyToOne
     private Event event;
 
-    @OneToMany(mappedBy = "lecture")
+    @ManyToMany
     private List<Speaker> speakers;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<User> participants;
 }

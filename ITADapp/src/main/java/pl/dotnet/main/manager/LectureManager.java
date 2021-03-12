@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.dotnet.main.dao.model.Lecture;
 import pl.dotnet.main.dao.model.Speaker;
-import pl.dotnet.main.dao.model.User;
 import pl.dotnet.main.dao.repository.LectureRepository;
 
 import java.time.Instant;
@@ -31,11 +30,9 @@ public class LectureManager {
         return lectureRepository.findByName(name);
     }
 
-    public Optional<Lecture> findByParticipant(User user) {
-        return lectureRepository.findByParticipants(user);
+    public Optional<Lecture> findBySpeaker(Speaker speaker) {
+        return lectureRepository.findBySpeakers(speaker);
     }
-
-    public Optional<Lecture> findBySpeaker(Speaker speaker){return lectureRepository.findBySpeakers(speaker);}
 
     public Optional<Lecture> findByStartDate(Instant date) {
         return lectureRepository.findByStartDate(date);
@@ -44,8 +41,6 @@ public class LectureManager {
     public Optional<Lecture> findByEndDate(Instant date) {
         return lectureRepository.findByEndDate(date);
     }
-
-
 
     public Lecture save(Lecture lecture) {
         return lectureRepository.save(lecture);
