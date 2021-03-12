@@ -1,16 +1,14 @@
 package pl.dotnet.main.dao.model;
 
-import com.sun.istack.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,16 +21,35 @@ public class Event {
     private Long eventId;
 
     @NotEmpty(message = "Event name cannot be empty or NULL")
-    private String eventName;
+    private String name;
 
-    @Nullable
-    private String eventDescription;
+    @NotNull
+    private String description;
 
-    // TODO: 03.03.2021 add owner
+    private Instant startDate;
+    private Instant endDate;
 
-    @Nullable
-    private Instant eventStartDate;
+    @NotNull
+    private Long availableTickets;
 
-    @Nullable
-    private Instant eventEndDate;
+    @NotNull
+    private Long bookedTickets;
+
+    @NotNull
+    private Long ticketPrice;
+
+    @ManyToOne
+    private User owner;
+
+    @OneToMany
+    private List<EventPartner> partners;
+
+    @OneToMany
+    private List<Lecture> lectures;
+
+    @ManyToMany
+    private List<User> registeredUsers;
+
+    @ManyToMany
+    private List<User> attendedUsers;
 }

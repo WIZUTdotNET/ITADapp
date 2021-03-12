@@ -1,22 +1,23 @@
-package pl.dotnet.main.manager;
+package pl.dotnet.main.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import pl.dotnet.main.dao.model.Event;
+import pl.dotnet.main.dao.model.User;
 import pl.dotnet.main.dao.repository.EventRepository;
 
 import java.time.Instant;
 import java.util.Optional;
 
 @Service
-public class EventManager {
+public class EventService {
 
     private final EventRepository eventRepository;
 
     @Autowired
-    public EventManager(EventRepository eventRepository) {
+    public EventService(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
 
@@ -26,6 +27,22 @@ public class EventManager {
 
     public Optional<Event> findById(Long id) {
         return eventRepository.findById(id);
+    }
+
+    public Optional<Event> findByName(String name) {
+        return eventRepository.findByName(name);
+    }
+
+    public Optional<Event> findByOwner(User user) {
+        return eventRepository.findByOwner(user);
+    }
+
+    public Optional<Event> findByStartDate(Instant date) {
+        return eventRepository.findByStartDate(date);
+    }
+
+    public Optional<Event> findByEndDate(Instant date) {
+        return eventRepository.findByEndDate(date);
     }
 
     public Event save(Event event) {
@@ -38,6 +55,6 @@ public class EventManager {
 
     @EventListener(ApplicationReadyEvent.class)
     public void fillDB() {
-        save(new Event(1l, "LoremIpsum", "", Instant.now(), Instant.now()));
+//        save(new Event(1l, "LoremIpsum", "", Instant.now(), Instant.now()));
     }
 }

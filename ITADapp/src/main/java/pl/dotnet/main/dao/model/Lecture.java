@@ -1,6 +1,6 @@
 package pl.dotnet.main.dao.model;
 
-import com.sun.istack.Nullable;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.Instant;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -20,15 +21,23 @@ public class Lecture {
     private Long lectureId;
 
     @NotEmpty(message = "Lecture name cannot be empty or NULL")
-    private String lectureName;
+    private String name;
 
-    @Nullable
-    private String lectureDescription;
+    @NotNull
+    private String description;
 
-    private Instant lectureStartDate;
-    private Instant lectureEndDate;
+    private Instant startDate;
+    private Instant endDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "eventID", referencedColumnName = "eventID")
+    @NotNull
+    private Long availableSeats;
+
+    @NotNull
+    private Long takenSeats;
+
+    @ManyToOne
     private Event event;
+
+    @ManyToMany
+    private List<Speaker> speakers;
 }
