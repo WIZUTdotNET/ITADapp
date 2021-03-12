@@ -1,4 +1,4 @@
-package pl.dotnet.main.manager;
+package pl.dotnet.main.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,11 +10,11 @@ import java.time.Instant;
 import java.util.Optional;
 
 @Service
-public class LectureManager {
+public class LectureService {
     private final LectureRepository lectureRepository;
 
     @Autowired
-    public LectureManager(LectureRepository lectureRepository) {
+    public LectureService(LectureRepository lectureRepository) {
         this.lectureRepository = lectureRepository;
     }
 

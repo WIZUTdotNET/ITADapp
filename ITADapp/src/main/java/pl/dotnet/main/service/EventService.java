@@ -1,4 +1,4 @@
-package pl.dotnet.main.manager;
+package pl.dotnet.main.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -12,12 +12,12 @@ import java.time.Instant;
 import java.util.Optional;
 
 @Service
-public class EventManager {
+public class EventService {
 
     private final EventRepository eventRepository;
 
     @Autowired
-    public EventManager(EventRepository eventRepository) {
+    public EventService(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
 
