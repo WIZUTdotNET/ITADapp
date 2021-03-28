@@ -16,12 +16,14 @@ public class EventService {
 
     private final EventRepository eventRepository;
 
+
     @Autowired
     public EventService(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
 
     public Iterable<Event> findAll() {
+
         return eventRepository.findAll();
     }
 
@@ -55,6 +57,6 @@ public class EventService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void fillDB() {
-//        save(new Event(1l, "LoremIpsum", "", Instant.now(), Instant.now()));
+        save(new Event(1L, "name", "Desc", Instant.now(), Instant.now(), 1L, 1L, 1L, null, null, null, null, null));
     }
 }

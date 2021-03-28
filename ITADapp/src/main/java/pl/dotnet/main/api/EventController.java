@@ -22,7 +22,7 @@ public class EventController {
         return eventService.findAll();
     }
 
-    @GetMapping("/fingById")
+    @GetMapping("/findById")
     public Optional<Event> getById(@RequestParam Long id) {
         return eventService.findById(id);
     }
