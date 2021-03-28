@@ -19,11 +19,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @NotEmpty(message = "User password cannot be empty or NULL")
-    private String password;
-
     @NotEmpty(message = "User username cannot be empty or NULL")
     private String username;
+
+    @NotEmpty(message = "User password cannot be empty or NULL")
+    private String password;
 
     @Email
     private String email;
