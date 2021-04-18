@@ -56,8 +56,7 @@ public class AuthService {
             String token = generateVerifivationToken(user);
 
             mailService.sendMail(new NotificationEmail("We tu kilknij",
-                    user.getEmail(), "Dzięki mordo za korzystanie z Connecta. " +
-                    "Pisior ci urośnie po kliknięciu  : " +
+                    user.getEmail(), "Aby aktywować konto kliknij w poniższy link: " +
                     "http://localhost:8080/api/auth/accountVerification/" + token));
             return true;
         }
