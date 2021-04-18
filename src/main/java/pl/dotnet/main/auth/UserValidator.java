@@ -13,10 +13,10 @@ public class UserValidator {
     private final UserRepository userRepository;
 
     public boolean valideteUser(User user) {
-        Optional<User> usetFromDBUsername = userRepository.findByUsername(user.getUsername());
-        Optional<User> usetFromDBEmail = userRepository.findByEmail(user.getEmail());
+        Optional<User> userFromDBUsername = userRepository.findByUsername(user.getUsername());
+        Optional<User> userFromDBEmail = userRepository.findByEmail(user.getEmail());
 
-        return !usetFromDBUsername.isPresent() && !usetFromDBEmail.isPresent();
+        return !userFromDBUsername.isPresent() && !userFromDBEmail.isPresent();
     }
 
 }

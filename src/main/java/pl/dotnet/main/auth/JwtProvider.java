@@ -59,27 +59,26 @@ public class JwtProvider {
         try {
             return (PrivateKey) keyStore.getKey("springblog", "secret".toCharArray());
         } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
-            throw new ConnectExpection("Exception occured while retrieving public key from keystore", e);
+            throw new ConnectExpection("Exception occurred while retrieving Private key from keystore", e);
         }
     }
 
     public boolean validateToken(String jwt) {
-        parser().setSigningKey(getPublickey()).parseClaimsJws(jwt);
+        parser().setSigningKey(getPublicKey()).parseClaimsJws(jwt);
         return true;
     }
 
-    private PublicKey getPublickey() {
+    private PublicKey getPublicKey() {
         try {
             return keyStore.getCertificate("springblog").getPublicKey();
         } catch (KeyStoreException e) {
-            throw new ConnectExpection("Exception occured while " +
-                    "retrieving public key from keystore", e);
+            throw new ConnectExpection("Exception occurred while retrieving Public key from keystore", e);
         }
     }
 
     public String getUsernameFromJwt(String token) {
         Claims claims = parser()
-                .setSigningKey(getPublickey())
+                .setSigningKey(getPublicKey())
                 .parseClaimsJws(token)
                 .getBody();
 

@@ -1,9 +1,11 @@
 package pl.dotnet.main.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.dotnet.main.dao.model.Event;
 import pl.dotnet.main.dao.model.User;
 import pl.dotnet.main.dao.repository.EventRepository;
@@ -14,15 +16,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class EventService {
 
     private final EventRepository eventRepository;
-
-
-    @Autowired
-    public EventService(EventRepository eventRepository) {
-        this.eventRepository = eventRepository;
-    }
 
     public Iterable<Event> findAll() {
         return eventRepository.findAll();
@@ -48,6 +45,7 @@ public class EventService {
         return eventRepository.findByEndDate(date);
     }
 
+    @Transactional
     public Event add(Event event) {
 
         if (Objects.isNull(event.getEventId()))

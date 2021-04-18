@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.dotnet.main.dao.model.NotificationEmail;
 import pl.dotnet.main.dao.model.User;
 import pl.dotnet.main.dao.model.VerificationToken;
@@ -20,7 +21,6 @@ import pl.dotnet.main.dto.RefreshTokenRequest;
 import pl.dotnet.main.dto.RegisterRequest;
 import pl.dotnet.main.expections.ConnectExpection;
 
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,6 +46,7 @@ public class AuthService {
                 .username(registerRequest.getUsername())
                 .email(registerRequest.getEmail())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .created(Instant.now())
                 .isActive(false)
                 .build();
 
@@ -54,8 +55,8 @@ public class AuthService {
 
             String token = generateVerifivationToken(user);
 
-            mailService.sendMail(new NotificationEmail("Please Activate your Account",
-                    user.getEmail(), "Dzięki mordo za korzystanie z Connecta, " +
+            mailService.sendMail(new NotificationEmail("We tu kilknij",
+                    user.getEmail(), "Dzięki mordo za korzystanie z Connecta. " +
                     "Pisior ci urośnie po kliknięciu  : " +
                     "http://localhost:8080/api/auth/accountVerification/" + token));
             return true;
@@ -76,9 +77,11 @@ public class AuthService {
     public void verifyAccount(String token) {
         Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
         fetchUserAndEnable(verificationToken.orElseThrow(() -> new ConnectExpection("Invalid Token")));
+        verificationTokenRepository.deleteById(verificationToken.get().getId());
     }
 
-    private void fetchUserAndEnable(VerificationToken verificationToken) {
+    @Transactional
+    void fetchUserAndEnable(VerificationToken verificationToken) {
         String username = verificationToken.getUser().getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(() -> new ConnectExpection("User not found with name - " + username));
         user.setIsActive(true);

@@ -1,6 +1,8 @@
 package pl.dotnet.main.api;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.dotnet.main.dao.model.Event;
 import pl.dotnet.main.service.EventService;
@@ -9,17 +11,13 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/event")
+@AllArgsConstructor
 public class EventController {
     private final EventService eventService;
 
-    @Autowired
-    public EventController(EventService eventService) {
-        this.eventService = eventService;
-    }
-
     @GetMapping("/all")
-    public Iterable<Event> getAll() {
-        return eventService.findAll();
+    public ResponseEntity<Iterable<Event>> getAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(eventService.findAll());
     }
 
     @GetMapping("/findById")
@@ -33,8 +31,8 @@ public class EventController {
     }
 
     @PostMapping
-    public Event addEvent(@RequestBody Event event) {
-        return eventService.add(event);
+    public ResponseEntity<Event> addEvent(@RequestBody Event event) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(eventService.add(event));
     }
 
     @PutMapping
