@@ -1,4 +1,4 @@
-package pl.dotnet.main.service;
+package pl.dotnet.main.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +19,6 @@ import pl.dotnet.main.dto.LoginRequest;
 import pl.dotnet.main.dto.RefreshTokenRequest;
 import pl.dotnet.main.dto.RegisterRequest;
 import pl.dotnet.main.expections.ConnectExpection;
-import pl.dotnet.main.mapper.UserMapper;
-import pl.dotnet.main.security.JwtProvider;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
@@ -30,7 +28,6 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 @Slf4j
-
 public class AuthService {
 
     private final VerificationTokenRepository verificationTokenRepository;
@@ -40,25 +37,30 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
+    private final UserValidator userValidator;
 
     @Transactional
-    public void signup(RegisterRequest registerRequest) {
+    public boolean signup(RegisterRequest registerRequest) {
 
-        User user = new User();
-        user.setUsername(registerRequest.getUsername());
-        user.setEmail(registerRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setCreated(Instant.now());
-        user.setIsActive(false);
+        User user = User.builder()
+                .username(registerRequest.getUsername())
+                .email(registerRequest.getEmail())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .isActive(false)
+                .build();
 
-        userRepository.save(user);
+        if (userValidator.valideteUser(user)) {
+            userRepository.save(user);
 
-        String token = generateVerifivationToken(user);
+            String token = generateVerifivationToken(user);
 
-        mailService.sendMail(new NotificationEmail("Please Activate your Account",
-                user.getEmail(), "Dzięki mordo za korzystanie z Connecta, " +
-                "Pisior ci urośnie po kliknięciu  : " +
-                "http://localhost:8080/api/auth/accountVerification/" + token));
+            mailService.sendMail(new NotificationEmail("Please Activate your Account",
+                    user.getEmail(), "Dzięki mordo za korzystanie z Connecta, " +
+                    "Pisior ci urośnie po kliknięciu  : " +
+                    "http://localhost:8080/api/auth/accountVerification/" + token));
+            return true;
+        }
+        return false;
     }
 
     private String generateVerifivationToken(User user) {

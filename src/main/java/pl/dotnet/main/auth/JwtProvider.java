@@ -1,4 +1,4 @@
-package pl.dotnet.main.security;
+package pl.dotnet.main.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -34,7 +34,6 @@ public class JwtProvider {
         } catch (KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException e) {
             throw new ConnectExpection("Exception occurred while loading keystore", e);
         }
-
     }
 
     public String generateToken(Authentication authentication) {

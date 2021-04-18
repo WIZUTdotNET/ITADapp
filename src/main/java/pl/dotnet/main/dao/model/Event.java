@@ -55,6 +55,4 @@ public class Event {
 
     @ManyToMany
     private List<User> attendedUsers;
-
-
 }

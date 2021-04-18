@@ -1,4 +1,4 @@
-package pl.dotnet.main.service;
+package pl.dotnet.main.auth;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

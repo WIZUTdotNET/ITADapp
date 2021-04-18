@@ -1,6 +1,7 @@
 package pl.dotnet.main.dao.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 public class User {
 
     @Id
@@ -41,5 +43,4 @@ public class User {
     private Instant created;
 
     private Boolean isActive;
-
 }

@@ -4,13 +4,17 @@ package pl.dotnet.main.api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dotnet.main.dto.*;
-import pl.dotnet.main.service.AuthService;
-import pl.dotnet.main.service.RefreshTokenService;
+import pl.dotnet.main.dto.AuthenticationResponse;
+import pl.dotnet.main.dto.LoginRequest;
+import pl.dotnet.main.dto.RefreshTokenRequest;
+import pl.dotnet.main.dto.RegisterRequest;
+import pl.dotnet.main.auth.AuthService;
+import pl.dotnet.main.auth.RefreshTokenService;
 
 import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.EXPECTATION_FAILED;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -22,12 +26,14 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
-        authService.signup(registerRequest);
-        return new ResponseEntity<>("User Registration Successful",
-                OK);
+        if (authService.signup(registerRequest))
+            return new ResponseEntity<>("User Registration Successful",
+                    OK);
+        else return new ResponseEntity<>("User exists",
+                EXPECTATION_FAILED);
     }
 
-    @GetMapping("accountVerification/{token}")
+    @GetMapping("/accountVerification/{token}")
     public ResponseEntity<String> verifyAccount(@PathVariable String token) {
         authService.verifyAccount(token);
         return new ResponseEntity<>("Account Activated Successfully", OK);
