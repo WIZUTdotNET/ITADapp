@@ -1,4 +1,4 @@
-package pl.dotnet.main.auth;
+package pl.dotnet.main.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.dotnet.main.auth.JwtProvider;
+import pl.dotnet.main.auth.MailService;
 import pl.dotnet.main.dao.model.NotificationEmail;
 import pl.dotnet.main.dao.model.User;
 import pl.dotnet.main.dao.model.VerificationToken;
@@ -55,7 +57,7 @@ public class AuthService {
 
             String token = generateVerifivationToken(user);
 
-            mailService.sendMail(new NotificationEmail("We tu kilknij",
+            mailService.sendMail(new NotificationEmail("Potwierdzenie rejestracji",
                     user.getEmail(), "Aby aktywować konto kliknij w poniższy link: " +
                     "http://localhost:8080/api/auth/accountVerification/" + token));
             return true;
@@ -114,5 +116,10 @@ public class AuthService {
     public boolean isLoggedIn() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return !(authentication instanceof AnonymousAuthenticationToken) && authentication.isAuthenticated();
+    }
+
+    public void logout(RefreshTokenRequest refreshTokenRequest) {
+
+        refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
     }
 }

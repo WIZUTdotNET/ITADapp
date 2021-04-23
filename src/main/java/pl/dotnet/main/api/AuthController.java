@@ -4,17 +4,16 @@ package pl.dotnet.main.api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.dotnet.main.service.AuthService;
 import pl.dotnet.main.dto.AuthenticationResponse;
 import pl.dotnet.main.dto.LoginRequest;
 import pl.dotnet.main.dto.RefreshTokenRequest;
 import pl.dotnet.main.dto.RegisterRequest;
-import pl.dotnet.main.auth.AuthService;
-import pl.dotnet.main.auth.RefreshTokenService;
 
 import javax.validation.Valid;
 
-import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.EXPECTATION_FAILED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -22,7 +21,6 @@ import static org.springframework.http.HttpStatus.EXPECTATION_FAILED;
 public class AuthController {
 
     private final AuthService authService;
-    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
@@ -51,7 +49,9 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
-        refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
+
+        authService.logout(refreshTokenRequest);
+
         return ResponseEntity.status(OK).body("Refresh Token Deleted Successfully!!");
     }
 }

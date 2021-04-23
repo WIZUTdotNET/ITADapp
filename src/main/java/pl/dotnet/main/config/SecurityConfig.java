@@ -1,4 +1,4 @@
-package pl.dotnet.main.auth;
+package pl.dotnet.main.config;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import pl.dotnet.main.auth.JwtAuthFilter;
 
 
 @EnableWebSecurity
@@ -36,10 +37,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/auth/**")
                 .permitAll()
-                .antMatchers(HttpMethod.GET, "/api/event")
+                .antMatchers(HttpMethod.GET, "/api/event/**")
+                .permitAll()
+                .antMatchers("**")
                 .permitAll()
                 .anyRequest()
                 .authenticated();
+
         httpSecurity.addFilterBefore(jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class);
     }
