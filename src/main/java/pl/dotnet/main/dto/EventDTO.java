@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventDto {
+public class EventDTO {
 
     private Long id;
     private String name;

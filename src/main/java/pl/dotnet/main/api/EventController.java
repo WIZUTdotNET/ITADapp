@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.dotnet.main.dao.model.Event;
+import pl.dotnet.main.dto.EventDTO;
 import pl.dotnet.main.service.EventService;
 
 import java.util.Optional;
@@ -31,8 +32,8 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<Event> addEvent(@RequestBody Event event) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(eventService.add(event));
+    public void addEvent(@RequestBody EventDTO eventDTO){
+        eventService.add(eventDTO);
     }
 
     @PutMapping

@@ -11,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.dotnet.main.auth.JwtProvider;
-import pl.dotnet.main.auth.MailService;
 import pl.dotnet.main.dao.model.NotificationEmail;
 import pl.dotnet.main.dao.model.User;
 import pl.dotnet.main.dao.model.VerificationToken;
@@ -48,6 +47,8 @@ public class AuthService {
                 .username(registerRequest.getUsername())
                 .email(registerRequest.getEmail())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .name(registerRequest.getName())
+                .surname(registerRequest.getSurname())
                 .created(Instant.now())
                 .isActive(false)
                 .build();
