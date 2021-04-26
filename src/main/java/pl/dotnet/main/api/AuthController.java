@@ -16,6 +16,7 @@ import static org.springframework.http.HttpStatus.EXPECTATION_FAILED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
+//@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/auth")
 @AllArgsConstructor
 public class AuthController {
