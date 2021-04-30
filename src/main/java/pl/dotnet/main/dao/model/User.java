@@ -31,9 +31,6 @@ public class User {
     @Email
     private String email;
 
-    private String name;
-    private String surname;
-
     @OneToMany
     private List<Event> ownedEvents;
 

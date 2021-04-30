@@ -4,15 +4,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.dotnet.main.dao.model.Event;
 import pl.dotnet.main.dao.model.User;
 import pl.dotnet.main.dao.repository.EventRepository;
-import pl.dotnet.main.dao.repository.UserRepository;
-import pl.dotnet.main.dto.EventDTO;
 import pl.dotnet.main.expections.DuplitatedEntityExpection;
 
 import java.time.Instant;
@@ -24,7 +20,6 @@ import java.util.Optional;
 public class EventService {
 
     private final EventRepository eventRepository;
-    private final UserRepository userRepository;
 
     public Iterable<Event> findAll() {
         return eventRepository.findAll();
@@ -51,22 +46,12 @@ public class EventService {
     }
 
     @Transactional
-    public void add(EventDTO eventDTO) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUser = authentication.getName();
-        Optional<User> user = userRepository.findByUsername(currentUser);
-        if (!Optional.ofNullable(user).isPresent()) {
-            if (Objects.isNull(eventDTO.getName())) {
-                assert user != null;
-                Event event = Event.builder()
-                        .name(eventDTO.getName())
-                        .description(eventDTO.getDescription())
-                        .owner(user.get())
-                        .build();
-                eventRepository.save(event);
-            } else
-                throw new DuplitatedEntityExpection("Event exists");
-        }
+    public Event add(Event event) {
+
+        if (Objects.isNull(event.getEventId()))
+            return eventRepository.save(event);
+        else
+            throw new DuplitatedEntityExpection("Event exists");
     }
 
     public Event update(Event event) {

@@ -4,15 +4,15 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import pl.dotnet.main.dao.model.Event;
-import pl.dotnet.main.dto.EventDTO;
+import pl.dotnet.main.dto.EventDto;
 
 @Mapper
 public interface EventMapper {
 
     @Mapping(target = "id", source = "eventId")
-    EventDTO eventToDto(Event event);
+    EventDto eventToDto(Event event);
 
     @Mapping(target = "eventId", source = "id")
     @InheritInverseConfiguration
-    Event dtoToEvent(EventDTO eventDto);
+    Event dtoToEvent(EventDto eventDto);
 }
