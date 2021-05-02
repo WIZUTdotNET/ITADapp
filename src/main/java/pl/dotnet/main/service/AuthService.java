@@ -2,6 +2,7 @@ package pl.dotnet.main.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContextException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,7 +42,7 @@ public class AuthService {
     private final UserValidator userValidator;
 
     @Transactional
-    public boolean signup(RegisterRequest registerRequest) {
+    public void signup(RegisterRequest registerRequest) {
 
         User user = User.builder()
                 .username(registerRequest.getUsername())
@@ -51,7 +52,7 @@ public class AuthService {
                 .isActive(false)
                 .build();
 
-        if (userValidator.valideteUser(user)) {
+        if (userValidator.validateUser(user)) {
             userRepository.save(user);
 
             String token = generateVerifivationToken(user);
@@ -59,9 +60,9 @@ public class AuthService {
             mailService.sendMail(new NotificationEmail("Potwierdzenie rejestracji",
                     user.getEmail(), "Aby aktywować konto kliknij w poniższy link: " +
                     "http://localhost:8080/api/auth/accountVerification/" + token));
-            return true;
+            return;
         }
-        return false;
+        throw new ApplicationContextException("Username or email taken");
     }
 
     private String generateVerifivationToken(User user) {
