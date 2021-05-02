@@ -4,11 +4,11 @@ package pl.dotnet.main.api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dotnet.main.service.AuthService;
 import pl.dotnet.main.dto.AuthenticationResponse;
 import pl.dotnet.main.dto.LoginRequest;
 import pl.dotnet.main.dto.RefreshTokenRequest;
 import pl.dotnet.main.dto.RegisterRequest;
+import pl.dotnet.main.service.AuthService;
 
 import javax.validation.Valid;
 
@@ -24,11 +24,12 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
-        if (authService.signup(registerRequest))
-            return new ResponseEntity<>("User Registration Successful",
-                    OK);
-        else return new ResponseEntity<>("User exists",
-                EXPECTATION_FAILED);
+        try {
+            authService.signup(registerRequest);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), EXPECTATION_FAILED);
+        }
+        return new ResponseEntity<>("User Registration Successful", OK);
     }
 
     @GetMapping("/accountVerification/{token}")
