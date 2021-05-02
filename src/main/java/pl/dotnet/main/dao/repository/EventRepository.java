@@ -5,7 +5,6 @@ import pl.dotnet.main.dao.model.Event;
 import pl.dotnet.main.dao.model.User;
 
 import java.time.Instant;
-import java.util.Optional;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
