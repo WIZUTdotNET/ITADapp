@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequest {
+public class TicketDTO {
 
-    private String username;
-    private String password;
+    private Long price;
+    private Boolean isPayed;
 }

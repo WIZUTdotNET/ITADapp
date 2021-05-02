@@ -17,13 +17,14 @@ import pl.dotnet.main.dao.model.User;
 import pl.dotnet.main.dao.model.VerificationToken;
 import pl.dotnet.main.dao.repository.UserRepository;
 import pl.dotnet.main.dao.repository.VerificationTokenRepository;
-import pl.dotnet.main.dto.AuthenticationResponse;
-import pl.dotnet.main.dto.LoginRequest;
-import pl.dotnet.main.dto.RefreshTokenRequest;
-import pl.dotnet.main.dto.RegisterRequest;
+import pl.dotnet.main.dto.AuthenticationResponseDTO;
+import pl.dotnet.main.dto.LoginRequestDTO;
+import pl.dotnet.main.dto.RefreshTokenRequestDTO;
+import pl.dotnet.main.dto.RegisterRequestDTO;
 import pl.dotnet.main.expections.ConnectExpection;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,13 +43,13 @@ public class AuthService {
     private final UserValidator userValidator;
 
     @Transactional
-    public void signup(RegisterRequest registerRequest) {
+    public void signup(RegisterRequestDTO registerRequestDTO) {
 
         User user = User.builder()
-                .username(registerRequest.getUsername())
-                .email(registerRequest.getEmail())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .created(Instant.now())
+                .username(registerRequestDTO.getUsername())
+                .email(registerRequestDTO.getEmail())
+                .password(passwordEncoder.encode(registerRequestDTO.getPassword()))
+                .created(LocalDateTime.now())
                 .isActive(false)
                 .build();
 
@@ -89,27 +90,27 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public AuthenticationResponse login(LoginRequest loginRequest) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
-                loginRequest.getPassword()));
+    public AuthenticationResponseDTO login(LoginRequestDTO loginRequestDTO) {
+        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(),
+                loginRequestDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         String token = jwtProvider.generateToken(authenticate);
-        return AuthenticationResponse.builder()
+        return AuthenticationResponseDTO.builder()
                 .authenticationToken(token)
                 .refreshToken(refreshTokenService.generateRefreshToken().getToken())
                 .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
-                .username(loginRequest.getUsername())
+                .username(loginRequestDTO.getUsername())
                 .build();
     }
 
-    public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
-        refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
-        String token = jwtProvider.generateTokenWithUserName(refreshTokenRequest.getUsername());
-        return AuthenticationResponse.builder()
+    public AuthenticationResponseDTO refreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
+        refreshTokenService.validateRefreshToken(refreshTokenRequestDTO.getRefreshToken());
+        String token = jwtProvider.generateTokenWithUserName(refreshTokenRequestDTO.getUsername());
+        return AuthenticationResponseDTO.builder()
                 .authenticationToken(token)
-                .refreshToken(refreshTokenRequest.getRefreshToken())
+                .refreshToken(refreshTokenRequestDTO.getRefreshToken())
                 .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
-                .username(refreshTokenRequest.getUsername())
+                .username(refreshTokenRequestDTO.getUsername())
                 .build();
     }
 
@@ -118,8 +119,8 @@ public class AuthService {
         return !(authentication instanceof AnonymousAuthenticationToken) && authentication.isAuthenticated();
     }
 
-    public void logout(RefreshTokenRequest refreshTokenRequest) {
+    public void logout(RefreshTokenRequestDTO refreshTokenRequestDTO) {
 
-        refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
+        refreshTokenService.deleteRefreshToken(refreshTokenRequestDTO.getRefreshToken());
     }
 }

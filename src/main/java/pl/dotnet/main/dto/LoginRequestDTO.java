@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventDto {
+public class LoginRequestDTO {
 
-    private Long id;
-    private String name;
-    private String description;
+    private String username;
+    private String password;
 }
