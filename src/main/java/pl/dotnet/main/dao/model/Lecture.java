@@ -28,8 +28,8 @@ public class Lecture {
     @NotNull
     private String description;
 
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private Instant startDate;
+    private Instant endDate;
 
     @NotNull
     private Long availableSeats;

@@ -24,7 +24,6 @@ import pl.dotnet.main.dto.RegisterRequestDTO;
 import pl.dotnet.main.expections.ConnectExpection;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -49,7 +48,9 @@ public class AuthService {
                 .username(registerRequestDTO.getUsername())
                 .email(registerRequestDTO.getEmail())
                 .password(passwordEncoder.encode(registerRequestDTO.getPassword()))
-                .created(LocalDateTime.now())
+                .surname(registerRequestDTO.getSurname())
+                .name(registerRequestDTO.getName())
+                .created(Instant.now())
                 .isActive(false)
                 .build();
 

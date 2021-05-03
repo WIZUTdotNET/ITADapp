@@ -2,6 +2,7 @@ package pl.dotnet.main.dao.model;
 
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 public class Speaker {
 
     @Id
@@ -28,5 +30,5 @@ public class Speaker {
     private String description;
 
     @ManyToOne
-    private Lecture lecture;
+    private Event event;
 }

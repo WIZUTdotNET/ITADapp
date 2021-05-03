@@ -13,7 +13,6 @@ import pl.dotnet.main.dto.EventDTO;
 import pl.dotnet.main.mapper.EventMapper;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.OK;
@@ -31,14 +30,12 @@ public class EventService {
         return eventMapper.eventToDtoList(eventRepository.findAll());
     }
 
-    public Optional<Event> findById(Long id) {
-
-        return eventRepository.findById(id);
-
+    public EventDTO findById(Long id) {
+        return eventMapper.eventToDto(eventRepository.findById(id).orElse(null));
     }
 
-    public Iterable<Event> findByName(String name) {
-        return eventRepository.findByName(name);
+    public List<EventDTO> findByName(String name) {
+        return eventMapper.eventToDtoList(eventRepository.findByName(name));
     }
 
     @Transactional
@@ -56,15 +53,16 @@ public class EventService {
         return new ResponseEntity<>(newEvent, OK);
     }
 
-    public ResponseEntity<String> update(Event event) {
+    public ResponseEntity<String> update(Event newEvent) {
 
         User user = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow();
-        Event newEvent = eventRepository.findById(event.getEventId()).orElseThrow();
+        Event oldEvent = eventRepository.findById(newEvent.getEventId()).orElseThrow();
 
-        if (!userRepository.findById(newEvent.getOwner().getUserId()).orElseThrow().equals(user))
+        if (!userRepository.findById(oldEvent.getOwner().getUserId()).orElseThrow().equals(user))
             return new ResponseEntity<>("", FORBIDDEN);
 
-        eventRepository.save(event);
+        newEvent.setOwner(user);
+        eventRepository.save(newEvent);
 
         return new ResponseEntity<>("Update Successful", OK);
     }

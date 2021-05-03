@@ -30,6 +30,9 @@ public class User {
     @NotEmpty(message = "User password cannot be empty or NULL")
     private String password;
 
+    private String name;
+    private String surname;
+
     @Email
     private String email;
 
@@ -42,7 +45,7 @@ public class User {
     @ManyToMany
     private List<Event> attendedEvents;
 
-    private LocalDateTime created;
+    private Instant created;
 
     private Boolean isActive;
 }
