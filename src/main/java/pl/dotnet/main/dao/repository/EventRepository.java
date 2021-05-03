@@ -8,10 +8,9 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
+    List<Event> findByOwner(User user);
 
-    Iterable<Event> findByOwner(User user);
-
-    Iterable<Event> findByName(String name);
+    List<Event> findByName(String name);
 
     List<Event> findAll();
 }

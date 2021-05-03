@@ -23,12 +23,12 @@ public class EventController {
     }
 
     @GetMapping("/findById")
-    public Optional<Event> getById(@RequestParam Long id) {
+    public EventDTO getById(@RequestParam Long id) {
         return eventService.findById(id);
     }
 
     @GetMapping("/findByName")
-    public Iterable<Event> getByName(@RequestParam String name) {
+    public Iterable<EventDTO> getByName(@RequestParam String name) {
         return eventService.findByName(name);
     }
 

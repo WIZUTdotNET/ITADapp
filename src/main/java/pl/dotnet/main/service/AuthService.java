@@ -48,6 +48,8 @@ public class AuthService {
                 .username(registerRequestDTO.getUsername())
                 .email(registerRequestDTO.getEmail())
                 .password(passwordEncoder.encode(registerRequestDTO.getPassword()))
+                .surname(registerRequestDTO.getSurname())
+                .name(registerRequestDTO.getName())
                 .created(Instant.now())
                 .isActive(false)
                 .build();

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class RegisterRequestDTO {
     private String email;
     private String username;
+    private String name;
+    private String surname;
     private String password;
-
 }

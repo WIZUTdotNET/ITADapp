@@ -30,6 +30,9 @@ public class User {
     @NotEmpty(message = "User password cannot be empty or NULL")
     private String password;
 
+    private String name;
+    private String surname;
+
     @Email
     private String email;
 
