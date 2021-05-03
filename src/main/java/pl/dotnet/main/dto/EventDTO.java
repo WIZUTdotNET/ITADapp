@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,6 +15,6 @@ public class EventDTO {
     private Long eventId;
     private String name;
     private String description;
-    private LocalDateTime startDate;
+    private Instant startDate;
     private String ownerUsername;
 }

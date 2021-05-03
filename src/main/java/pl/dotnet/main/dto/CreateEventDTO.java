@@ -21,5 +21,5 @@ public class CreateEventDTO {
     private String description;
 
     @NotNull
-    private LocalDateTime startTime;
+    private Instant startTime;
 }

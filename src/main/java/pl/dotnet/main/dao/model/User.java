@@ -42,7 +42,7 @@ public class User {
     @ManyToMany
     private List<Event> attendedEvents;
 
-    private LocalDateTime created;
+    private Instant created;
 
     private Boolean isActive;
 }
