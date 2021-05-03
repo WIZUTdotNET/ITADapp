@@ -12,7 +12,7 @@ import java.util.Optional;
 public class UserValidator {
     private final UserRepository userRepository;
 
-    public boolean valideteUser(User user) {
+    public boolean validateUser(User user) {
         Optional<User> userFromDBUsername = userRepository.findByUsername(user.getUsername());
         Optional<User> userFromDBEmail = userRepository.findByEmail(user.getEmail());
 

@@ -4,8 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import pl.dotnet.main.dao.model.Event;
 import pl.dotnet.main.dao.model.User;
 
-import java.time.Instant;
-import java.util.Optional;
+import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
@@ -14,7 +13,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Iterable<Event> findByName(String name);
 
-    Iterable<Event> findByStartDate(Instant date);
-
-    Iterable<Event> findByEndDate(Instant date);
+    List<Event> findAll();
 }

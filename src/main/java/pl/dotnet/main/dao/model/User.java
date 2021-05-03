@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -40,7 +42,7 @@ public class User {
     @ManyToMany
     private List<Event> attendedEvents;
 
-    private Instant created;
+    private LocalDateTime created;
 
     private Boolean isActive;
 }
