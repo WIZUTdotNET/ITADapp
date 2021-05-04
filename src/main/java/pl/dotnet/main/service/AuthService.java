@@ -2,7 +2,7 @@ package pl.dotnet.main.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContextException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +27,9 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.EXPECTATION_FAILED;
+import static org.springframework.http.HttpStatus.OK;
+
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -42,8 +45,7 @@ public class AuthService {
     private final UserValidator userValidator;
 
     @Transactional
-    public void signup(RegisterRequestDTO registerRequestDTO) {
-
+    public ResponseEntity<String> signup(RegisterRequestDTO registerRequestDTO) {
         User user = User.builder()
                 .username(registerRequestDTO.getUsername())
                 .email(registerRequestDTO.getEmail())
@@ -62,9 +64,10 @@ public class AuthService {
             mailService.sendMail(new NotificationEmail("Potwierdzenie rejestracji",
                     user.getEmail(), "Aby aktywować konto kliknij w poniższy link: " +
                     "http://localhost:8080/api/auth/accountVerification/" + token));
-            return;
+            return new ResponseEntity<>("User Registration Successful", OK);
         }
-        throw new ApplicationContextException("Username or email taken");
+
+        return new ResponseEntity<>("Username or email taken", EXPECTATION_FAILED);
     }
 
     private String generateVerifivationToken(User user) {
@@ -121,7 +124,6 @@ public class AuthService {
     }
 
     public void logout(RefreshTokenRequestDTO refreshTokenRequestDTO) {
-
         refreshTokenService.deleteRefreshToken(refreshTokenRequestDTO.getRefreshToken());
     }
 }

@@ -10,6 +10,7 @@ import pl.dotnet.main.dao.repository.EventRepository;
 import pl.dotnet.main.dao.repository.UserRepository;
 import pl.dotnet.main.dto.CreateEventDTO;
 import pl.dotnet.main.dto.EventDTO;
+import pl.dotnet.main.expections.ConnectExpection;
 import pl.dotnet.main.mapper.EventMapper;
 
 import java.util.List;
@@ -28,7 +29,6 @@ public class EventService {
     private final EventMapper eventMapper;
 
     public List<EventDTO> findAll() {
-
         return eventRepository.findAll().stream()
                 .map(eventMapper::eventToDto)
                 .collect(Collectors.toList());
@@ -51,7 +51,7 @@ public class EventService {
         Event newEvent = Event.builder().name(event.getName())
                 .description(event.getDescription())
                 .startDate(event.getStartTime())
-                .owner(userRepository.findByUsername(username).orElseThrow())
+                .owner(userRepository.findByUsername(username).orElseThrow(() -> new ConnectExpection("Event not found")))
                 .build();
 
         eventRepository.save(newEvent);
@@ -61,8 +61,8 @@ public class EventService {
 
     public ResponseEntity<String> update(Event newEvent) {
 
-        User user = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow();
-        Event oldEvent = eventRepository.findById(newEvent.getEventId()).orElseThrow();
+        User user = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow(() -> new ConnectExpection("User not found"));
+        Event oldEvent = eventRepository.findById(newEvent.getEventId()).orElseThrow(() -> new ConnectExpection("Event not found"));
 
         if (!userRepository.findById(oldEvent.getOwner().getUserId()).orElseThrow().equals(user))
             return new ResponseEntity<>("", FORBIDDEN);
@@ -75,8 +75,8 @@ public class EventService {
 
     public ResponseEntity<String> deleteById(Long id) {
 
-        User user = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow();
-        Event newEvent = eventRepository.findById(id).orElseThrow();
+        User user = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow(() -> new ConnectExpection("User not found"));
+        Event newEvent = eventRepository.findById(id).orElseThrow(() -> new ConnectExpection("Event not found"));
 
         if (!userRepository.findById(newEvent.getOwner().getUserId()).orElseThrow().equals(user))
             return new ResponseEntity<>("", FORBIDDEN);

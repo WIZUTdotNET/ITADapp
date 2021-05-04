@@ -11,6 +11,7 @@ import pl.dotnet.main.dao.repository.SpeakerRepository;
 import pl.dotnet.main.dao.repository.UserRepository;
 import pl.dotnet.main.dto.CreateSpeakerDTO;
 import pl.dotnet.main.dto.SpeakerDTO;
+import pl.dotnet.main.expections.ConnectExpection;
 import pl.dotnet.main.mapper.SpeakerMapper;
 
 import java.util.List;
@@ -43,8 +44,8 @@ public class SpeakerService {
 
     public ResponseEntity<?> addSpeaker(CreateSpeakerDTO createSpeakerDTO) {
 
-        Event event = eventRepository.findById(createSpeakerDTO.getEventId()).orElseThrow();
-        User currentUser = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow();
+        Event event = eventRepository.findById(createSpeakerDTO.getEventId()).orElseThrow(() -> new ConnectExpection("Event not found"));
+        User currentUser = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow(() -> new ConnectExpection("User not found"));
         if (!userRepository.findById(event.getOwner().getUserId()).orElseThrow().equals(currentUser))
             return new ResponseEntity<>(FORBIDDEN);
 
@@ -61,12 +62,12 @@ public class SpeakerService {
 
     public ResponseEntity<?> deleteSpeakerById(Long speakerId, Long eventId) {
 
-        Event event = eventRepository.findById(eventId).orElseThrow();
-        User currentUser = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow();
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new ConnectExpection("Event not found"));
+        User currentUser = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow(() -> new ConnectExpection("User not found"));
         if (!userRepository.findById(event.getOwner().getUserId()).orElseThrow().equals(currentUser))
             return new ResponseEntity<>(FORBIDDEN);
 
-        Speaker speaker = speakerRepository.findById(speakerId).orElseThrow();
+        Speaker speaker = speakerRepository.findById(speakerId).orElseThrow(() -> new ConnectExpection("Speaker not found"));
 
         if (speaker.getEvent().equals(event)) {
             speakerRepository.deleteById(speakerId);
@@ -77,12 +78,12 @@ public class SpeakerService {
 
     public ResponseEntity<?> editSpeakerById(CreateSpeakerDTO createSpeakerDTO, Long speakerId) {
 
-        Event event = eventRepository.findById(createSpeakerDTO.getEventId()).orElseThrow();
-        User currentUser = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow();
+        Event event = eventRepository.findById(createSpeakerDTO.getEventId()).orElseThrow(() -> new ConnectExpection("Event not found"));
+        User currentUser = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow(() -> new ConnectExpection("User not found"));
         if (!userRepository.findById(event.getOwner().getUserId()).orElseThrow().equals(currentUser))
             return new ResponseEntity<>(FORBIDDEN);
 
-        Speaker oldSpeaker = speakerRepository.findById(speakerId).orElseThrow();
+        Speaker oldSpeaker = speakerRepository.findById(speakerId).orElseThrow(() -> new ConnectExpection("Speaker not found"));
 
         if (oldSpeaker.getEvent().equals(event)) {
 
