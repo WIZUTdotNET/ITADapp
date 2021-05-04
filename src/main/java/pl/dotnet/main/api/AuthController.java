@@ -24,6 +24,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody RegisterRequestDTO registerRequestDTO) {
+
         try {
             authService.signup(registerRequestDTO);
         } catch (Exception e) {

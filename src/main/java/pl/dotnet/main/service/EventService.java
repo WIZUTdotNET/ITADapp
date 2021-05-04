@@ -13,6 +13,7 @@ import pl.dotnet.main.dto.EventDTO;
 import pl.dotnet.main.mapper.EventMapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.OK;
@@ -27,7 +28,10 @@ public class EventService {
     private final EventMapper eventMapper;
 
     public List<EventDTO> findAll() {
-        return eventMapper.eventToDtoList(eventRepository.findAll());
+
+        return eventRepository.findAll().stream()
+                .map(eventMapper::eventToDto)
+                .collect(Collectors.toList());
     }
 
     public EventDTO findById(Long id) {
@@ -35,7 +39,9 @@ public class EventService {
     }
 
     public List<EventDTO> findByName(String name) {
-        return eventMapper.eventToDtoList(eventRepository.findByName(name));
+        return eventRepository.findAll().stream()
+                .map(eventMapper::eventToDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional

@@ -9,7 +9,6 @@ import pl.dotnet.main.dto.EventDTO;
 import pl.dotnet.main.service.EventService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/event")

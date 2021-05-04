@@ -14,6 +14,7 @@ import pl.dotnet.main.dto.SpeakerDTO;
 import pl.dotnet.main.mapper.SpeakerMapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.OK;
@@ -26,6 +27,19 @@ public class SpeakerService {
     private final UserService userService;
     private final UserRepository userRepository;
     private final SpeakerMapper speakerMapper;
+
+    public List<SpeakerDTO> findSpeakersByEventId(Long eventId) {
+
+        Event event = eventRepository.findById(eventId).orElseThrow();
+        return speakerRepository.findAllByEvent(event).stream()
+                .map(speakerMapper::speakerToDto)
+                .collect(Collectors.toList());
+    }
+
+    public SpeakerDTO findSpeakerById(Long speakerId) {
+
+        return speakerMapper.speakerToDto(speakerRepository.findById(speakerId).orElse(null));
+    }
 
     public ResponseEntity<?> addSpeaker(CreateSpeakerDTO createSpeakerDTO) {
 
@@ -86,21 +100,4 @@ public class SpeakerService {
         }
         return new ResponseEntity<>(FORBIDDEN);
     }
-
-    public List<SpeakerDTO> findSpeakersByEventId(Long eventId) {
-
-        Event event = eventRepository.findById(eventId).orElseThrow();
-        return speakerMapper.speakerToDto(speakerRepository.findAllByEvent(event));
-    }
-
-    public SpeakerDTO findSpeakerById(Long speakerId) {
-
-        return speakerMapper.speakerToDto(speakerRepository.findById(speakerId).orElse(null));
-    }
-
-    //todo
-    // edycja,
-    // wszyscy dla eventu,
-    // speaker po id,
-    // asd
 }
