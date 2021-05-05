@@ -9,7 +9,7 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import pl.dotnet.main.dao.model.NotificationEmail;
-import pl.dotnet.main.expections.ConnectExpection;
+import pl.dotnet.main.expections.ConnectException;
 
 
 @Service
@@ -34,7 +34,7 @@ class MailService {
             log.info("Activation email sent!!");
         } catch (MailException e) {
             log.error("Exception occurred when sending mail", e);
-            throw new ConnectExpection("Exception occurred when sending mail to " + notificationEmail.getRecipient(), e);
+            throw new ConnectException("Exception occurred when sending mail to " + notificationEmail.getRecipient(), e);
         }
     }
 
