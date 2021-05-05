@@ -11,7 +11,7 @@ import pl.dotnet.main.dao.repository.SpeakerRepository;
 import pl.dotnet.main.dao.repository.UserRepository;
 import pl.dotnet.main.dto.CreateSpeakerDTO;
 import pl.dotnet.main.dto.SpeakerDTO;
-import pl.dotnet.main.expections.ConnectExpection;
+import pl.dotnet.main.expections.ConnectException;
 import pl.dotnet.main.mapper.SpeakerMapper;
 
 import java.util.List;
@@ -30,7 +30,6 @@ public class SpeakerService {
     private final SpeakerMapper speakerMapper;
 
     public List<SpeakerDTO> findSpeakersByEventId(Long eventId) {
-
         Event event = eventRepository.findById(eventId).orElseThrow();
         return speakerRepository.findAllByEvent(event).stream()
                 .map(speakerMapper::speakerToDto)
@@ -38,14 +37,12 @@ public class SpeakerService {
     }
 
     public SpeakerDTO findSpeakerById(Long speakerId) {
-
         return speakerMapper.speakerToDto(speakerRepository.findById(speakerId).orElse(null));
     }
 
     public ResponseEntity<?> addSpeaker(CreateSpeakerDTO createSpeakerDTO) {
-
-        Event event = eventRepository.findById(createSpeakerDTO.getEventId()).orElseThrow(() -> new ConnectExpection("Event not found"));
-        if (isCurrentUserNotTheOwnerOfEvent(event)) return new ResponseEntity<>(FORBIDDEN);
+        Event event = eventRepository.findById(createSpeakerDTO.getEventId()).orElseThrow(() -> new ConnectException("Event not found"));
+        if (isCurrentUserNotTheOwnerOfThisEvent(event)) return new ResponseEntity<>(FORBIDDEN);
 
         Speaker newSpeaker = Speaker.builder()
                 .name(createSpeakerDTO.getName())
@@ -59,11 +56,10 @@ public class SpeakerService {
     }
 
     public ResponseEntity<?> deleteSpeakerById(Long speakerId, Long eventId) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new ConnectException("Event not found"));
+        if (isCurrentUserNotTheOwnerOfThisEvent(event)) return new ResponseEntity<>(FORBIDDEN);
 
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new ConnectExpection("Event not found"));
-        if (isCurrentUserNotTheOwnerOfEvent(event)) return new ResponseEntity<>(FORBIDDEN);
-
-        Speaker speaker = speakerRepository.findById(speakerId).orElseThrow(() -> new ConnectExpection("Speaker not found"));
+        Speaker speaker = speakerRepository.findById(speakerId).orElseThrow(() -> new ConnectException("Speaker not found"));
 
         if (speaker.getEvent().equals(event)) {
             speakerRepository.deleteById(speakerId);
@@ -73,11 +69,10 @@ public class SpeakerService {
     }
 
     public ResponseEntity<?> editSpeakerById(CreateSpeakerDTO createSpeakerDTO, Long speakerId) {
+        Event event = eventRepository.findById(createSpeakerDTO.getEventId()).orElseThrow(() -> new ConnectException("Event not found"));
+        if (isCurrentUserNotTheOwnerOfThisEvent(event)) return new ResponseEntity<>(FORBIDDEN);
 
-        Event event = eventRepository.findById(createSpeakerDTO.getEventId()).orElseThrow(() -> new ConnectExpection("Event not found"));
-        if (isCurrentUserNotTheOwnerOfEvent(event)) return new ResponseEntity<>(FORBIDDEN);
-
-        Speaker oldSpeaker = speakerRepository.findById(speakerId).orElseThrow(() -> new ConnectExpection("Speaker not found"));
+        Speaker oldSpeaker = speakerRepository.findById(speakerId).orElseThrow(() -> new ConnectException("Speaker not found"));
 
         if (oldSpeaker.getEvent().equals(event)) {
 
@@ -96,8 +91,8 @@ public class SpeakerService {
         return new ResponseEntity<>(FORBIDDEN);
     }
 
-    private boolean isCurrentUserNotTheOwnerOfEvent(Event event) {
-        User currentUser = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow(() -> new ConnectExpection("User not found"));
+    private boolean isCurrentUserNotTheOwnerOfThisEvent(Event event) {
+        User currentUser = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow(() -> new ConnectException("User not found"));
         return !userRepository.findById(event.getOwner().getUserId()).orElseThrow().equals(currentUser);
     }
 }
