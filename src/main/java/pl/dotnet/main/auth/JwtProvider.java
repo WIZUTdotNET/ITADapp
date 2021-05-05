@@ -5,7 +5,7 @@ import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import pl.dotnet.main.expections.ConnectExpection;
+import pl.dotnet.main.expections.ConnectException;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class JwtProvider {
             InputStream resourceAsStream = getClass().getResourceAsStream("/springblog.jks");
             keyStore.load(resourceAsStream, "secret".toCharArray());
         } catch (KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException e) {
-            throw new ConnectExpection("Exception occurred while loading keystore", e);
+            throw new ConnectException("Exception occurred while loading keystore", e);
         }
     }
 
@@ -59,7 +59,7 @@ public class JwtProvider {
         try {
             return (PrivateKey) keyStore.getKey("springblog", "secret".toCharArray());
         } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
-            throw new ConnectExpection("Exception occurred while retrieving Private key from keystore", e);
+            throw new ConnectException("Exception occurred while retrieving Private key from keystore", e);
         }
     }
 
@@ -72,7 +72,7 @@ public class JwtProvider {
         try {
             return keyStore.getCertificate("springblog").getPublicKey();
         } catch (KeyStoreException e) {
-            throw new ConnectExpection("Exception occurred while retrieving Public key from keystore", e);
+            throw new ConnectException("Exception occurred while retrieving Public key from keystore", e);
         }
     }
 
