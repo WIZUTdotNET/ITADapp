@@ -7,7 +7,6 @@ import pl.dotnet.main.dao.model.User;
 import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
-
     List<Event> findByOwner(User user);
 
     List<Event> findByName(String name);

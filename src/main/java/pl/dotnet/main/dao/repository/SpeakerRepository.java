@@ -7,6 +7,5 @@ import pl.dotnet.main.dao.model.Speaker;
 import java.util.List;
 
 public interface SpeakerRepository extends JpaRepository<Speaker, Long> {
-
     List<Speaker> findAllByEvent(Event event);
 }

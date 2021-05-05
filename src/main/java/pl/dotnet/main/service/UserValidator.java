@@ -10,13 +10,14 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class UserValidator {
+
     private final UserRepository userRepository;
 
     public boolean validateUser(User user) {
         Optional<User> userFromDBUsername = userRepository.findByUsername(user.getUsername());
         Optional<User> userFromDBEmail = userRepository.findByEmail(user.getEmail());
 
-        return !userFromDBUsername.isPresent() && !userFromDBEmail.isPresent();
+        return userFromDBUsername.isEmpty() && userFromDBEmail.isEmpty();
     }
 
 }

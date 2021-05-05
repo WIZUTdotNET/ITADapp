@@ -38,7 +38,6 @@ public class EventController {
 
     @PutMapping
     public ResponseEntity<String> updateEvent(@RequestBody Event event) {
-
         return eventService.update(event);
     }
 
