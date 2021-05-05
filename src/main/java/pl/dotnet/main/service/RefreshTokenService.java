@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.dotnet.main.dao.model.RefreshToken;
 import pl.dotnet.main.dao.repository.RefreshTokenRepository;
-import pl.dotnet.main.expections.ConnectExpection;
+import pl.dotnet.main.expections.ConnectException;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -27,7 +27,7 @@ public class RefreshTokenService {
 
     void validateRefreshToken(String token) {
         refreshTokenRepository.findByToken(token)
-                .orElseThrow(() -> new ConnectExpection("Invalid refresh Token"));
+                .orElseThrow(() -> new ConnectException("Invalid refresh Token"));
     }
 
     public void deleteRefreshToken(String token) {
