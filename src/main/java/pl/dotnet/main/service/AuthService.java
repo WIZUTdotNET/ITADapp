@@ -21,7 +21,7 @@ import pl.dotnet.main.dto.AuthenticationResponseDTO;
 import pl.dotnet.main.dto.LoginRequestDTO;
 import pl.dotnet.main.dto.RefreshTokenRequestDTO;
 import pl.dotnet.main.dto.RegisterRequestDTO;
-import pl.dotnet.main.expections.ConnectExpection;
+import pl.dotnet.main.expections.ConnectException;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -82,14 +82,14 @@ public class AuthService {
 
     public void verifyAccount(String token) {
         Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
-        fetchUserAndEnable(verificationToken.orElseThrow(() -> new ConnectExpection("Invalid Token")));
+        fetchUserAndEnable(verificationToken.orElseThrow(() -> new ConnectException("Invalid Token")));
         verificationTokenRepository.deleteById(verificationToken.get().getId());
     }
 
     @Transactional
     void fetchUserAndEnable(VerificationToken verificationToken) {
         String username = verificationToken.getUser().getUsername();
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ConnectExpection("User not found with name - " + username));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ConnectException("User not found with name - " + username));
         user.setIsActive(true);
         userRepository.save(user);
     }
