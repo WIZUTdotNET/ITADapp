@@ -102,7 +102,7 @@ public class AuthService {
         return AuthenticationResponseDTO.builder()
                 .authenticationToken(token)
                 .refreshToken(refreshTokenService.generateRefreshToken().getToken())
-                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()).toString())
                 .username(loginRequestDTO.getUsername())
                 .build();
     }
@@ -113,7 +113,7 @@ public class AuthService {
         return AuthenticationResponseDTO.builder()
                 .authenticationToken(token)
                 .refreshToken(refreshTokenRequestDTO.getRefreshToken())
-                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()).toString())
                 .username(refreshTokenRequestDTO.getUsername())
                 .build();
     }

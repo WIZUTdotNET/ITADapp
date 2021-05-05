@@ -1,6 +1,7 @@
 package pl.dotnet.main.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import static org.springframework.http.HttpStatus.OK;
 @Service
 @AllArgsConstructor
 @Transactional
+@Slf4j
 public class EventService {
 
     private final EventRepository eventRepository;

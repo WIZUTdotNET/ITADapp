@@ -23,7 +23,7 @@ public class LectureDTO {
     private String description;
 
     @NotNull
-    private Instant startDate;
+    private String startDate;
 
     @NotNull
     private Long availableSeats;
