@@ -31,10 +31,10 @@ public class SwaggerConfig {
 
     private ApiInfo getApiInfo() {
         return new ApiInfoBuilder()
-                .title("Reddit Clone API")
-                .version("1.0")
-                .description("API for Reddit Clone Application")
-                .contact(new Contact("Sai Upadhyayula", "http://programmingtechie.com", "xyz@email.com"))
+                .title("Connect API")
+                .version("0.8")
+                .description("API for ITADApp project")
+                .contact(new Contact("Koło naukowe .net", "https://dotnet.zut.edu.pl/", "dotnet.zut@outlook.com"))
                 .license("Apache License Version 2.0")
                 .build();
     }

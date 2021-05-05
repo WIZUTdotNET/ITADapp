@@ -2,6 +2,7 @@ package pl.dotnet.main.dao.model;
 
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 public class Lecture {
 
     @Id
@@ -27,7 +29,6 @@ public class Lecture {
     private String description;
 
     private Instant startDate;
-    private Instant endDate;
 
     @NotNull
     private Long availableSeats;

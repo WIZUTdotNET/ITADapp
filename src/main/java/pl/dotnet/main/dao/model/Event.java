@@ -28,7 +28,6 @@ public class Event {
     private String description;
 
     private Instant startDate;
-    private Instant endDate;
 
     @Nullable
     private Long availableTickets;

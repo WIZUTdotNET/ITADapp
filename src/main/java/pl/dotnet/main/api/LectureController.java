@@ -1,44 +1,53 @@
 package pl.dotnet.main.api;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dotnet.main.dao.model.Lecture;
+import pl.dotnet.main.dto.CreateLectureDTO;
+import pl.dotnet.main.dto.LectureDTO;
 import pl.dotnet.main.service.LectureService;
 
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/lecture")
+@AllArgsConstructor
 public class LectureController {
     private final LectureService lectureService;
 
-    @Autowired
-    public LectureController(LectureService lectureService) {
-        this.lectureService = lectureService;
-    }
-
-    @GetMapping("/all")
-    public Iterable<Lecture> getALl() {
-        return lectureService.findAll();
-    }
-
-    @GetMapping
-    public Optional<Lecture> getById(@RequestParam Long id) {
-        return lectureService.findById(id);
-    }
-
     @PostMapping
-    public Lecture addLecture(@RequestBody Lecture lecture) {
-        return lectureService.save(lecture);
+    public ResponseEntity<String> addLecture(@RequestBody CreateLectureDTO lectureDTO) {
+        return lectureService.addLecture(lectureDTO);
     }
 
-    @PutMapping
-    public Lecture saveLecture(@RequestBody Lecture lecture) {
-        return lectureService.save(lecture);
+    @PostMapping("/addSpeaker")
+    public ResponseEntity<String> addSpeakerToLecture(@RequestParam Long speakerId, Long lectureId) {
+        return lectureService.addSpeakerToLecture(speakerId, lectureId);
+    }
+
+    @DeleteMapping("/removeSpeaker")
+    public ResponseEntity<String> removeSpeakerToLecture(@RequestParam Long speakerId, Long lectureId) {
+        return lectureService.removeSpeakerFromLecture(speakerId, lectureId);
     }
 
     @DeleteMapping
-    public void deleteLecture(@RequestParam Long id) {
-        lectureService.deleteById(id);
+    public ResponseEntity<String> deleteLecture(@RequestParam Long lectureId, Long eventId) {
+        return lectureService.deleteLecture(lectureId, eventId);
     }
+
+    @PutMapping
+    public ResponseEntity<String> editSpeaker(@RequestBody CreateLectureDTO lectureDTO, @RequestParam Long lectureId) {
+        return lectureService.editLectureById(lectureDTO, lectureId);
+    }
+
+    @GetMapping("/getLectureFromEvent")
+    public List<LectureDTO> getLectureFromEvent(@RequestParam Long eventId) {
+        return lectureService.findLecturesByEventId(eventId);
+    }
+
+    @GetMapping("/getLecture")
+    public LectureDTO getLecture(@RequestParam Long lectureId) {
+        return lectureService.findLectureById(lectureId);
+    }
+
 }

@@ -21,6 +21,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class EventService {
 
     private final EventRepository eventRepository;
@@ -44,10 +45,11 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public ResponseEntity<Event> add(CreateEventDTO event) {
+
+    public ResponseEntity<Event> addEvent(CreateEventDTO event) {
         String username = userService.getCurrentUserName();
-        Event newEvent = Event.builder().name(event.getName())
+        Event newEvent = Event.builder()
+                .name(event.getName())
                 .description(event.getDescription())
                 .startDate(event.getStartTime())
                 .owner(userRepository.findByUsername(username).orElseThrow(() -> new ConnectException("Event not found")))

@@ -42,7 +42,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
-    private final UserValidator userValidator;
+    private final UserService userService;
 
     @Transactional
     public ResponseEntity<String> signup(RegisterRequestDTO registerRequestDTO) {
@@ -56,7 +56,7 @@ public class AuthService {
                 .isActive(false)
                 .build();
 
-        if (userValidator.validateUser(user)) {
+        if (userService.validateUser(user)) {
             userRepository.save(user);
 
             String token = generateVerifivationToken(user);
