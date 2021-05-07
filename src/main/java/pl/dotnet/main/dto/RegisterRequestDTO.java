@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RefreshTokenRequest {
-    @NotBlank
-    private String refreshToken;
+public class RegisterRequestDTO {
+    private String email;
     private String username;
+    private String name;
+    private String surname;
+    private String password;
 }

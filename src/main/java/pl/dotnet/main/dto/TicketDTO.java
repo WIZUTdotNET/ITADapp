@@ -7,10 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class TicketDTO {
 
-    public Long id;
-    public String username;
-    public String password;
-    public String email;
+    private Long price;
+    private Boolean isPayed;
 }

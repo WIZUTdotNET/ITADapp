@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -28,11 +30,11 @@ public class User {
     @NotEmpty(message = "User password cannot be empty or NULL")
     private String password;
 
-    @Email
-    private String email;
-
     private String name;
     private String surname;
+
+    @Email
+    private String email;
 
     @OneToMany
     private List<Event> ownedEvents;

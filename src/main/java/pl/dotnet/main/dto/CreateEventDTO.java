@@ -3,18 +3,23 @@ package pl.dotnet.main.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventDTO {
+public class CreateEventDTO {
 
-    private Long eventId;
+    @NotNull
     private String name;
+
+    @NotNull
     private String description;
-    private Instant startDate;
-    private UserDTO owner;
+
+    @NotNull
+    private Instant startTime;
 }

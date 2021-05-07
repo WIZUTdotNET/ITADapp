@@ -4,17 +4,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import pl.dotnet.main.dao.model.Event;
 import pl.dotnet.main.dao.model.User;
 
-import java.time.Instant;
-import java.util.Optional;
+import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
+    List<Event> findByOwner(User user);
 
-    Iterable<Event> findByOwner(User user);
+    List<Event> findByName(String name);
 
-    Iterable<Event> findByName(String name);
-
-    Iterable<Event> findByStartDate(Instant date);
-
-    Iterable<Event> findByEndDate(Instant date);
+    List<Event> findAll();
 }

@@ -1,23 +1,21 @@
 package pl.dotnet.main.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.dotnet.main.dao.model.Event;
 import pl.dotnet.main.dao.model.User;
 import pl.dotnet.main.dao.repository.EventRepository;
 import pl.dotnet.main.dao.repository.UserRepository;
+import pl.dotnet.main.dto.CreateEventDTO;
 import pl.dotnet.main.dto.EventDTO;
-import pl.dotnet.main.expections.DuplitatedEntityExpection;
+import pl.dotnet.main.mapper.EventMapper;
 
-import java.time.Instant;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.List;
+
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.OK;
 
 @Service
 @AllArgsConstructor
@@ -25,62 +23,60 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
+    private final EventMapper eventMapper;
 
-    public Iterable<Event> findAll() {
-        return eventRepository.findAll();
+    public List<EventDTO> findAll() {
+        return eventMapper.eventToDtoList(eventRepository.findAll());
     }
 
-    public Optional<Event> findById(Long id) {
-        return eventRepository.findById(id);
+    public EventDTO findById(Long id) {
+        return eventMapper.eventToDto(eventRepository.findById(id).orElse(null));
     }
 
-    public Iterable<Event> findByName(String name) {
-        return eventRepository.findByName(name);
-    }
-
-    public Iterable<Event> findByOwner(User user) {
-        return eventRepository.findByOwner(user);
-    }
-
-    public Iterable<Event> findByStartDate(Instant date) {
-        return eventRepository.findByStartDate(date);
-    }
-
-    public Iterable<Event> findByEndDate(Instant date) {
-        return eventRepository.findByEndDate(date);
+    public List<EventDTO> findByName(String name) {
+        return eventMapper.eventToDtoList(eventRepository.findByName(name));
     }
 
     @Transactional
-    public void add(EventDTO eventDTO) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUser = authentication.getName();
-        Optional<User> user = userRepository.findByUsername(currentUser);
-        if (!Optional.ofNullable(user).isPresent()) {
-            if (Objects.isNull(eventDTO.getName())) {
-                assert user != null;
-                Event event = Event.builder()
-                        .name(eventDTO.getName())
-                        .description(eventDTO.getDescription())
-                        .owner(user.get())
-                        .build();
-                eventRepository.save(event);
-            } else
-                throw new DuplitatedEntityExpection("Event exists");
-        }
+    public ResponseEntity<Event> add(CreateEventDTO event) {
+
+        String username = userService.getCurrentUserName();
+        Event newEvent = Event.builder().name(event.getName())
+                .description(event.getDescription())
+                .startDate(event.getStartTime())
+                .owner(userRepository.findByUsername(username).orElseThrow())
+                .build();
+
+        eventRepository.save(newEvent);
+
+        return new ResponseEntity<>(newEvent, OK);
     }
 
-    public Event update(Event event) {
-        return eventRepository.save(event);
+    public ResponseEntity<String> update(Event newEvent) {
+
+        User user = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow();
+        Event oldEvent = eventRepository.findById(newEvent.getEventId()).orElseThrow();
+
+        if (!userRepository.findById(oldEvent.getOwner().getUserId()).orElseThrow().equals(user))
+            return new ResponseEntity<>("", FORBIDDEN);
+
+        newEvent.setOwner(user);
+        eventRepository.save(newEvent);
+
+        return new ResponseEntity<>("Update Successful", OK);
     }
 
-    public void deleteById(Long id) {
+    public ResponseEntity<String> deleteById(Long id) {
+
+        User user = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow();
+        Event newEvent = eventRepository.findById(id).orElseThrow();
+
+        if (!userRepository.findById(newEvent.getOwner().getUserId()).orElseThrow().equals(user))
+            return new ResponseEntity<>("", FORBIDDEN);
+
         eventRepository.deleteById(id);
+
+        return new ResponseEntity<>("Deletion Successful", OK);
     }
-
-    @EventListener(ApplicationReadyEvent.class)
-    public void fillDB() {
-//        save(new Event(1L, "Przykladowa nazwa", "Przykladowy opis", Instant.now(), Instant.now(), 1L, 1L, 1L, null, null, null, null, null));
-    }
-
-
 }

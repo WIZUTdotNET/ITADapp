@@ -4,12 +4,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LectureDto {
+public class CreateSpeakerDTO {
 
-    private Long id;
+    @NotNull
     private String name;
+
+    @NotNull
+    private String surname;
+
+    @NotNull
     private String description;
+
+    @NotNull
+    private Long eventId;
 }
