@@ -3,8 +3,8 @@ package pl.dotnet.main.api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dotnet.main.dto.CreateLectureDTO;
-import pl.dotnet.main.dto.LectureDTO;
+import pl.dotnet.main.dto.Lecture.CreateLectureDTO;
+import pl.dotnet.main.dto.Lecture.LectureDTO;
 import pl.dotnet.main.service.LectureService;
 
 import java.util.List;

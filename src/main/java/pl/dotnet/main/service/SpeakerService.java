@@ -7,8 +7,8 @@ import pl.dotnet.main.dao.model.Event;
 import pl.dotnet.main.dao.model.Speaker;
 import pl.dotnet.main.dao.repository.EventRepository;
 import pl.dotnet.main.dao.repository.SpeakerRepository;
-import pl.dotnet.main.dto.CreateSpeakerDTO;
-import pl.dotnet.main.dto.SpeakerDTO;
+import pl.dotnet.main.dto.Speaker.CreateSpeakerDTO;
+import pl.dotnet.main.dto.Speaker.SpeakerDTO;
 import pl.dotnet.main.expections.ConnectException;
 import pl.dotnet.main.mapper.SpeakerMapper;
 

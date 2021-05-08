@@ -1,12 +1,12 @@
-package pl.dotnet.main.dto;
+package pl.dotnet.main.dto.Event;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.dotnet.main.dto.User.UserDTO;
 
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
 
 @Data
 @AllArgsConstructor

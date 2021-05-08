@@ -10,8 +10,8 @@ import pl.dotnet.main.dao.model.Speaker;
 import pl.dotnet.main.dao.repository.EventRepository;
 import pl.dotnet.main.dao.repository.LectureRepository;
 import pl.dotnet.main.dao.repository.SpeakerRepository;
-import pl.dotnet.main.dto.CreateLectureDTO;
-import pl.dotnet.main.dto.LectureDTO;
+import pl.dotnet.main.dto.Lecture.CreateLectureDTO;
+import pl.dotnet.main.dto.Lecture.LectureDTO;
 import pl.dotnet.main.expections.ConnectException;
 import pl.dotnet.main.mapper.LectureMapper;
 
@@ -55,7 +55,10 @@ public class LectureService {
                 .event(event)
                 .build();
 
+
+        event.addLectureToEvent(newLecture);
         lectureRepository.save(newLecture);
+        eventRepository.save(event);
         return new ResponseEntity<>(OK);
     }
 
@@ -99,9 +102,7 @@ public class LectureService {
     }
 
     public ResponseEntity<String> addSpeakerToLecture(Long speakerId, Long lectureId) {
-
         Speaker speaker = speakerRepository.findById(speakerId).orElseThrow();
-
         Lecture lecture = lectureRepository.findById(lectureId).orElseThrow();
 
         if (!lecture.getEvent().equals(speaker.getEvent()))

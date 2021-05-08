@@ -4,8 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import pl.dotnet.main.dao.model.Lecture;
-import pl.dotnet.main.dto.LectureDTO;
-import pl.dotnet.main.dto.SpeakerDTO;
+import pl.dotnet.main.dto.Lecture.LectureDTO;
+import pl.dotnet.main.dto.Speaker.SpeakerDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;

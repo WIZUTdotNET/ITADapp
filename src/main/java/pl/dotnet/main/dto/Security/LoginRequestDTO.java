@@ -1,4 +1,4 @@
-package pl.dotnet.main.dto;
+package pl.dotnet.main.dto.Security;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TicketDTO {
+public class LoginRequestDTO {
 
-    private Long price;
-    private Boolean isPayed;
+    private String username;
+    private String password;
 }

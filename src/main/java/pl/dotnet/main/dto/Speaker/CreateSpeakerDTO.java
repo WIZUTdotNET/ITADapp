@@ -1,7 +1,6 @@
-package pl.dotnet.main.dto;
+package pl.dotnet.main.dto.Speaker;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,11 +9,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class SpeakerDTO {
-
-    @NotNull
-    private Long speakerId;
+public class CreateSpeakerDTO {
 
     @NotNull
     private String name;

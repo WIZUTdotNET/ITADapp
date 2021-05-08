@@ -1,26 +1,22 @@
-package pl.dotnet.main.dto;
+package pl.dotnet.main.dto.EventPartner;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateLectureDTO {
+public class UpdateEventPartnerDTO {
+
+    @NotNull
+    private Long eventPartnerId;
 
     @NotNull
     private String name;
 
     @NotNull
     private String description;
-
-    @NotNull
-    private Instant startDate;
-
-    @NotNull
-    private Long eventId;
 }

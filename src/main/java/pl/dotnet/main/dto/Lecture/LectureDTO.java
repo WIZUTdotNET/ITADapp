@@ -1,16 +1,18 @@
-package pl.dotnet.main.dto;
+package pl.dotnet.main.dto.Lecture;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.dotnet.main.dto.Speaker.SpeakerDTO;
 
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class LectureDTO {
 
     @NotNull

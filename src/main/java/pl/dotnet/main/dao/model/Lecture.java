@@ -47,4 +47,28 @@ public class Lecture {
 
     @ManyToMany
     private List<User> attendedUsers;
+
+    public void addSpeakerToLecture(Speaker speaker) {
+        List<Speaker> speakers = getSpeakers();
+        speakers.add(speaker);
+        setSpeakers(speakers);
+    }
+
+    public void removeUserFromLecture(Speaker speaker) {
+        List<Speaker> speakers = getSpeakers();
+        speakers.remove(speaker);
+        setSpeakers(speakers);
+    }
+
+    public void registerUser(User user) {
+        List<User> registeredUsers = getRegisteredUsers();
+        registeredUsers.add(user);
+        setRegisteredUsers(registeredUsers);
+    }
+
+    public void markUserAsAttended(User user) {
+        List<User> attendedUsers = getAttendedUsers();
+        attendedUsers.add(user);
+        setAttendedUsers(attendedUsers);
+    }
 }

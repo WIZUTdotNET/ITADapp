@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.dotnet.main.dao.model.Event;
-import pl.dotnet.main.dto.CreateEventDTO;
-import pl.dotnet.main.dto.EventDTO;
+import pl.dotnet.main.dto.Event.CreateEventDTO;
+import pl.dotnet.main.dto.Event.DetailedEventDTO;
+import pl.dotnet.main.dto.Event.EventDTO;
 import pl.dotnet.main.service.EventService;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class EventController {
     }
 
     @GetMapping("/findById")
-    public EventDTO getById(@RequestParam Long id) {
+    public DetailedEventDTO getById(@RequestParam Long id) {
         return eventService.findById(id);
     }
 
@@ -32,7 +33,7 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<Event> addEvent(@RequestBody CreateEventDTO event) {
+    public ResponseEntity<EventDTO> addEvent(@RequestBody CreateEventDTO event) {
         return eventService.addEvent(event);
     }
 

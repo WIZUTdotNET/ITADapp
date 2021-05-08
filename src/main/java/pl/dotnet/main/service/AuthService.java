@@ -17,10 +17,10 @@ import pl.dotnet.main.dao.model.User;
 import pl.dotnet.main.dao.model.VerificationToken;
 import pl.dotnet.main.dao.repository.UserRepository;
 import pl.dotnet.main.dao.repository.VerificationTokenRepository;
-import pl.dotnet.main.dto.AuthenticationResponseDTO;
-import pl.dotnet.main.dto.LoginRequestDTO;
-import pl.dotnet.main.dto.RefreshTokenRequestDTO;
-import pl.dotnet.main.dto.RegisterRequestDTO;
+import pl.dotnet.main.dto.Security.AuthenticationResponseDTO;
+import pl.dotnet.main.dto.Security.LoginRequestDTO;
+import pl.dotnet.main.dto.Security.RefreshTokenRequestDTO;
+import pl.dotnet.main.dto.Security.RegisterRequestDTO;
 import pl.dotnet.main.expections.ConnectException;
 
 import java.time.Instant;
