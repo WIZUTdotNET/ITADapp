@@ -1,7 +1,7 @@
 package pl.dotnet.main.dao.model;
 
-import com.sun.istack.Nullable;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 public class EventPartner {
 
     @Id
@@ -24,9 +25,6 @@ public class EventPartner {
 
     @NotNull
     private String description;
-
-    @Nullable
-    private String profileImageURL;
 
     @ManyToOne
     private Event sponsoredEvent;

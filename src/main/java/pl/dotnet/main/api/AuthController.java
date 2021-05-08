@@ -1,13 +1,12 @@
 package pl.dotnet.main.api;
 
-
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dotnet.main.dto.AuthenticationResponseDTO;
-import pl.dotnet.main.dto.LoginRequestDTO;
-import pl.dotnet.main.dto.RefreshTokenRequestDTO;
-import pl.dotnet.main.dto.RegisterRequestDTO;
+import pl.dotnet.main.dto.Security.AuthenticationResponseDTO;
+import pl.dotnet.main.dto.Security.LoginRequestDTO;
+import pl.dotnet.main.dto.Security.RefreshTokenRequestDTO;
+import pl.dotnet.main.dto.Security.RegisterRequestDTO;
 import pl.dotnet.main.service.AuthService;
 
 import javax.validation.Valid;

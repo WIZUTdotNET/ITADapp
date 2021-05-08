@@ -46,4 +46,28 @@ public class User {
     private Instant created;
 
     private Boolean isActive;
+
+    public void addEventToOwned(Event event) {
+        List<Event> ownedEvents = getOwnedEvents();
+        ownedEvents.add(event);
+        setOwnedEvents(ownedEvents);
+    }
+
+    public void removeEventFromOwned(Event event) {
+        List<Event> ownedEvents = getOwnedEvents();
+        ownedEvents.remove(event);
+        setOwnedEvents(ownedEvents);
+    }
+
+    public void registerOnEvent(Event event) {
+        List<Event> registeredOnEvents = getRegisteredOnEvents();
+        registeredOnEvents.add(event);
+        setRegisteredOnEvents(registeredOnEvents);
+    }
+
+    public void attendEvent(Event event) {
+        List<Event> attendedEvents = getAttendedEvents();
+        attendedEvents.add(event);
+        setAttendedEvents(attendedEvents);
+    }
 }

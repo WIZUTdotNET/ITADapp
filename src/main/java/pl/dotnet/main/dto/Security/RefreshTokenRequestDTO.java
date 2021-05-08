@@ -1,21 +1,17 @@
-package pl.dotnet.main.dto;
+package pl.dotnet.main.dto.Security;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import javax.validation.constraints.NotBlank;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class AuthenticationResponseDTO {
+public class RefreshTokenRequestDTO {
 
-    private String authenticationToken;
+    @NotBlank
     private String refreshToken;
-    private String expiresAt;
     private String username;
 }
-

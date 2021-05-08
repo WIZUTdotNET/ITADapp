@@ -4,7 +4,7 @@
 //import org.mapstruct.Mapper;
 //import org.mapstruct.Mapping;
 //import pl.dotnet.main.dao.model.User;
-//import pl.dotnet.main.dto.UserDTO;
+//import pl.dotnet.main.dto.User.UserDTO;
 //
 //@Mapper
 //public interface UserMapper {

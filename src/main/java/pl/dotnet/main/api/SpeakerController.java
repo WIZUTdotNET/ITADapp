@@ -3,8 +3,8 @@ package pl.dotnet.main.api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dotnet.main.dto.CreateSpeakerDTO;
-import pl.dotnet.main.dto.SpeakerDTO;
+import pl.dotnet.main.dto.Speaker.CreateSpeakerDTO;
+import pl.dotnet.main.dto.Speaker.SpeakerDTO;
 import pl.dotnet.main.service.SpeakerService;
 
 import java.util.List;

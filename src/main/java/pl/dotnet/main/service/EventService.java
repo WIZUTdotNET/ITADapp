@@ -9,8 +9,9 @@ import pl.dotnet.main.dao.model.Event;
 import pl.dotnet.main.dao.model.User;
 import pl.dotnet.main.dao.repository.EventRepository;
 import pl.dotnet.main.dao.repository.UserRepository;
-import pl.dotnet.main.dto.CreateEventDTO;
-import pl.dotnet.main.dto.EventDTO;
+import pl.dotnet.main.dto.Event.CreateEventDTO;
+import pl.dotnet.main.dto.Event.DetailedEventDTO;
+import pl.dotnet.main.dto.Event.EventDTO;
 import pl.dotnet.main.expections.ConnectException;
 import pl.dotnet.main.mapper.EventMapper;
 
@@ -37,18 +38,18 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
-    public EventDTO findById(Long id) {
-        return eventMapper.eventToDto(eventRepository.findById(id).orElse(null));
+    public DetailedEventDTO findById(Long id) {
+        return eventMapper.eventToDetailedDto(eventRepository.findById(id).orElse(null));
     }
 
     public List<EventDTO> findByName(String name) {
-        return eventRepository.findAll().stream()
+        return eventRepository.findAllByName(name).stream()
                 .map(eventMapper::eventToDto)
                 .collect(Collectors.toList());
     }
 
 
-    public ResponseEntity<Event> addEvent(CreateEventDTO event) {
+    public ResponseEntity<EventDTO> addEvent(CreateEventDTO event) {
         String username = userService.getCurrentUserName();
         Event newEvent = Event.builder()
                 .name(event.getName())
@@ -59,9 +60,10 @@ public class EventService {
 
         eventRepository.save(newEvent);
 
-        return new ResponseEntity<>(newEvent, OK);
+        return new ResponseEntity<>(eventMapper.eventToDto(newEvent), OK);
     }
 
+    //todo rewrite this use UpdateEventDTO
     public ResponseEntity<String> update(Event newEvent) {
         User user = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow(() -> new ConnectException("User not found"));
         Event oldEvent = eventRepository.findById(newEvent.getEventId()).orElseThrow(() -> new ConnectException("Event not found"));

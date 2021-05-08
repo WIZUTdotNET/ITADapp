@@ -4,7 +4,7 @@
 //import org.mapstruct.Mapper;
 //import org.mapstruct.Mapping;
 //import pl.dotnet.main.dao.model.Ticket;
-//import pl.dotnet.main.dto.TicketDTO;
+//import pl.dotnet.main.dto.Ticket.TicketDTO;
 //
 //@Mapper
 //public interface TicketMapper {
