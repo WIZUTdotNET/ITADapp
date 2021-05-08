@@ -58,7 +58,7 @@ public class AuthService {
         if (userService.validateUser(user)) {
             userRepository.save(user);
 
-            String token = generateVerifivationToken(user);
+            String token = generateVerificationToken(user);
 
             mailService.sendMail(new NotificationEmail("Potwierdzenie rejestracji",
                     user.getEmail(), "Aby aktywować konto kliknij w poniższy link:</b>" +
@@ -70,7 +70,7 @@ public class AuthService {
         return new ResponseEntity<>("Username or email taken", EXPECTATION_FAILED);
     }
 
-    private String generateVerifivationToken(User user) {
+    private String generateVerificationToken(User user) {
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
