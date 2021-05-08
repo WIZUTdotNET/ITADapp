@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import pl.dotnet.main.dao.model.Event;
 import pl.dotnet.main.dao.model.User;
 import pl.dotnet.main.dao.repository.UserRepository;
-import pl.dotnet.main.expections.ConnectException;
+import pl.dotnet.main.expections.NotFoundRequestException;
+import pl.dotnet.main.expections.UnauthorizedRequestException;
 
 import java.util.Optional;
 
@@ -35,7 +36,9 @@ public class UserService {
     }
 
     public boolean isCurrentUserNotTheOwnerOfThisEvent(Event event) {
-        User currentUser = userRepository.findByUsername(getCurrentUserName()).orElseThrow(() -> new ConnectException("User not found"));
-        return !userRepository.findById(event.getOwner().getUserId()).orElseThrow().equals(currentUser);
+        User currentUser = userRepository.findByUsername(getCurrentUserName()).orElseThrow(() -> new NotFoundRequestException("User not found"));
+        if (!userRepository.findById(event.getOwner().getUserId()).orElseThrow(() -> new UnauthorizedRequestException("User is not the owner of this event")).equals(currentUser)) {
+            throw new UnauthorizedRequestException("User is not the owner of this event");
+        } else return false;
     }
 }

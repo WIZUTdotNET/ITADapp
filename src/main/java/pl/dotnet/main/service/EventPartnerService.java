@@ -11,12 +11,12 @@ import pl.dotnet.main.dao.repository.EventRepository;
 import pl.dotnet.main.dto.EventPartner.CreateEventPartnerDTO;
 import pl.dotnet.main.dto.EventPartner.EventPartnerDTO;
 import pl.dotnet.main.dto.EventPartner.UpdateEventPartnerDTO;
+import pl.dotnet.main.expections.NotFoundRequestException;
 import pl.dotnet.main.mapper.EventPartnerMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.OK;
 
 @Service
@@ -30,7 +30,7 @@ public class EventPartnerService {
     private final UserService userService;
 
     public ResponseEntity<List<EventPartnerDTO>> findByEventId(Long eventId) {
-        Event event = eventRepository.findById(eventId).orElseThrow();
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException("Event not found"));
         List<EventPartnerDTO> eventPartnerDTOList = eventPartnerRepository.findAllBySponsoredEvent(event).stream()
                 .map(eventPartnerMapper::eventPartnerToDto)
                 .collect(Collectors.toList());
@@ -38,14 +38,14 @@ public class EventPartnerService {
     }
 
     public ResponseEntity<EventPartnerDTO> findById(Long partnerId) {
-        EventPartnerDTO eventPartnerDTO = eventPartnerMapper.eventPartnerToDto(eventPartnerRepository.findById(partnerId).orElse(null));
+        EventPartnerDTO eventPartnerDTO = eventPartnerMapper.eventPartnerToDto(eventPartnerRepository.findById(partnerId).orElseThrow(() -> new NotFoundRequestException("Event partner not found")));
         return new ResponseEntity<>(eventPartnerDTO, OK);
     }
 
     public ResponseEntity<String> addPartner(CreateEventPartnerDTO eventPartnerDTO) {
-        Event event = eventRepository.findById(eventPartnerDTO.getEventId()).orElseThrow();
-        if (userService.isCurrentUserNotTheOwnerOfThisEvent(event))
-            return new ResponseEntity<>("", FORBIDDEN);
+        Event event = eventRepository.findById(eventPartnerDTO.getEventId()).orElseThrow(() -> new NotFoundRequestException("Event not found"));
+
+        userService.isCurrentUserNotTheOwnerOfThisEvent(event);
 
         EventPartner newEventPartner = EventPartner.builder()
                 .name(eventPartnerDTO.getName())
@@ -60,11 +60,11 @@ public class EventPartnerService {
     }
 
     public ResponseEntity<String> editPartner(UpdateEventPartnerDTO eventPartnerDTO) {
-        EventPartner oldEventPartner = eventPartnerRepository.findById(eventPartnerDTO.getEventPartnerId()).orElseThrow();
+        EventPartner oldEventPartner = eventPartnerRepository.findById(eventPartnerDTO.getEventPartnerId()).orElseThrow(() -> new NotFoundRequestException("Event partner not found"));
 
-        Event event = eventRepository.findById(oldEventPartner.getEventPartnerId()).orElseThrow();
-        if (userService.isCurrentUserNotTheOwnerOfThisEvent(event))
-            return new ResponseEntity<>("", FORBIDDEN);
+        Event event = eventRepository.findById(oldEventPartner.getEventPartnerId()).orElseThrow(() -> new NotFoundRequestException("Event not found"));
+
+        userService.isCurrentUserNotTheOwnerOfThisEvent(event);
 
         EventPartner newEventPartner = EventPartner.builder()
                 .eventPartnerId(oldEventPartner.getEventPartnerId())
@@ -78,11 +78,10 @@ public class EventPartnerService {
     }
 
     public ResponseEntity<String> deletePartner(Long eventPartnerId) {
-        EventPartner eventPartner = eventPartnerRepository.findById(eventPartnerId).orElseThrow();
-        Event event = eventRepository.findById(eventPartner.getSponsoredEvent().getEventId()).orElseThrow();
+        EventPartner eventPartner = eventPartnerRepository.findById(eventPartnerId).orElseThrow(() -> new NotFoundRequestException("Event partner not found"));
+        Event event = eventRepository.findById(eventPartner.getSponsoredEvent().getEventId()).orElseThrow(() -> new NotFoundRequestException("Event not found"));
 
-        if (userService.isCurrentUserNotTheOwnerOfThisEvent(event))
-            return new ResponseEntity<>("", FORBIDDEN);
+        userService.isCurrentUserNotTheOwnerOfThisEvent(event);
 
         event.removePartnerFromEvent(eventPartner);
         eventRepository.save(event);
