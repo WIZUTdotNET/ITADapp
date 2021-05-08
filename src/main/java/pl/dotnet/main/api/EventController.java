@@ -9,7 +9,6 @@ import pl.dotnet.main.dto.EventDTO;
 import pl.dotnet.main.service.EventService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/event")
@@ -34,12 +33,11 @@ public class EventController {
 
     @PostMapping
     public ResponseEntity<Event> addEvent(@RequestBody CreateEventDTO event) {
-        return eventService.add(event);
+        return eventService.addEvent(event);
     }
 
     @PutMapping
     public ResponseEntity<String> updateEvent(@RequestBody Event event) {
-
         return eventService.update(event);
     }
 

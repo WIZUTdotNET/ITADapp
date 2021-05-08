@@ -2,7 +2,7 @@ package pl.dotnet.main.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContextException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,11 +21,13 @@ import pl.dotnet.main.dto.AuthenticationResponseDTO;
 import pl.dotnet.main.dto.LoginRequestDTO;
 import pl.dotnet.main.dto.RefreshTokenRequestDTO;
 import pl.dotnet.main.dto.RegisterRequestDTO;
-import pl.dotnet.main.expections.ConnectExpection;
+import pl.dotnet.main.expections.ConnectException;
 
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
+
+import static org.springframework.http.HttpStatus.*;
 
 @Service
 @AllArgsConstructor
@@ -39,11 +41,10 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
-    private final UserValidator userValidator;
+    private final UserService userService;
 
     @Transactional
-    public void signup(RegisterRequestDTO registerRequestDTO) {
-
+    public ResponseEntity<String> signup(RegisterRequestDTO registerRequestDTO) {
         User user = User.builder()
                 .username(registerRequestDTO.getUsername())
                 .email(registerRequestDTO.getEmail())
@@ -54,17 +55,19 @@ public class AuthService {
                 .isActive(false)
                 .build();
 
-        if (userValidator.validateUser(user)) {
+        if (userService.validateUser(user)) {
             userRepository.save(user);
 
             String token = generateVerifivationToken(user);
 
             mailService.sendMail(new NotificationEmail("Potwierdzenie rejestracji",
-                    user.getEmail(), "Aby aktywować konto kliknij w poniższy link: " +
-                    "http://localhost:8080/api/auth/accountVerification/" + token));
-            return;
+                    user.getEmail(), "Aby aktywować konto kliknij w poniższy link:</b>" +
+                    "Frontend: http://localhost:3000/accountVerification/" + token + "</b>" +
+                    "Backend: http://localhost:8080/api/auth/accountVerification/" + token));
+            return new ResponseEntity<>("User Registration Successful", OK);
         }
-        throw new ApplicationContextException("Username or email taken");
+
+        return new ResponseEntity<>("Username or email taken", EXPECTATION_FAILED);
     }
 
     private String generateVerifivationToken(User user) {
@@ -77,16 +80,22 @@ public class AuthService {
         return token;
     }
 
-    public void verifyAccount(String token) {
+    public ResponseEntity<String> verifyAccount(String token) {
         Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
-        fetchUserAndEnable(verificationToken.orElseThrow(() -> new ConnectExpection("Invalid Token")));
+
+        if (verificationToken.isEmpty()) {
+            return new ResponseEntity<>("Account already activated or token not found", NOT_FOUND);
+        }
+
+        fetchUserAndEnable(verificationToken.orElseThrow(() -> new ConnectException("Invalid Token")));
         verificationTokenRepository.deleteById(verificationToken.get().getId());
+        return new ResponseEntity<>("Account Activated Successfully", OK);
     }
 
     @Transactional
     void fetchUserAndEnable(VerificationToken verificationToken) {
         String username = verificationToken.getUser().getUsername();
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ConnectExpection("User not found with name - " + username));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ConnectException("User not found with name - " + username));
         user.setIsActive(true);
         userRepository.save(user);
     }
@@ -99,7 +108,7 @@ public class AuthService {
         return AuthenticationResponseDTO.builder()
                 .authenticationToken(token)
                 .refreshToken(refreshTokenService.generateRefreshToken().getToken())
-                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()).toString())
                 .username(loginRequestDTO.getUsername())
                 .build();
     }
@@ -110,7 +119,7 @@ public class AuthService {
         return AuthenticationResponseDTO.builder()
                 .authenticationToken(token)
                 .refreshToken(refreshTokenRequestDTO.getRefreshToken())
-                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()).toString())
                 .username(refreshTokenRequestDTO.getUsername())
                 .build();
     }
@@ -121,7 +130,6 @@ public class AuthService {
     }
 
     public void logout(RefreshTokenRequestDTO refreshTokenRequestDTO) {
-
         refreshTokenService.deleteRefreshToken(refreshTokenRequestDTO.getRefreshToken());
     }
 }

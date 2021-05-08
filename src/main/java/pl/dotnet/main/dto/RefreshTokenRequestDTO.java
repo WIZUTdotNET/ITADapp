@@ -10,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RefreshTokenRequestDTO {
+
     @NotBlank
     private String refreshToken;
     private String username;

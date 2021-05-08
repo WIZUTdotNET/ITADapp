@@ -12,7 +12,6 @@ import pl.dotnet.main.service.AuthService;
 
 import javax.validation.Valid;
 
-import static org.springframework.http.HttpStatus.EXPECTATION_FAILED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -24,18 +23,12 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody RegisterRequestDTO registerRequestDTO) {
-        try {
-            authService.signup(registerRequestDTO);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), EXPECTATION_FAILED);
-        }
-        return new ResponseEntity<>("User Registration Successful", OK);
+        return authService.signup(registerRequestDTO);
     }
 
     @GetMapping("/accountVerification/{token}")
     public ResponseEntity<String> verifyAccount(@PathVariable String token) {
-        authService.verifyAccount(token);
-        return new ResponseEntity<>("Account Activated Successfully", OK);
+        return authService.verifyAccount(token);
     }
 
     @PostMapping("/login")
@@ -50,9 +43,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO) {
-
         authService.logout(refreshTokenRequestDTO);
-
         return ResponseEntity.status(OK).body("Refresh Token Deleted Successfully!!");
     }
 }

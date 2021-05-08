@@ -2,20 +2,20 @@ package pl.dotnet.main.dao.model;
 
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 public class Lecture {
 
     @Id
@@ -29,7 +29,6 @@ public class Lecture {
     private String description;
 
     private Instant startDate;
-    private Instant endDate;
 
     @NotNull
     private Long availableSeats;

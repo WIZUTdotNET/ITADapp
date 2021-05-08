@@ -32,12 +32,12 @@ public class SpeakerController {
     }
 
     @GetMapping("/getSpeakersFormEvent")
-    public List<SpeakerDTO> getSpeakersFormEvent(Long eventId) {
+    public List<SpeakerDTO> getSpeakersFormEvent(@RequestParam Long eventId) {
         return speakerService.findSpeakersByEventId(eventId);
     }
 
     @GetMapping("/getSpeaker")
-    public SpeakerDTO getSpeaker(Long speakerId) {
+    public SpeakerDTO getSpeaker(@RequestParam Long speakerId) {
         return speakerService.findSpeakerById(speakerId);
     }
 }

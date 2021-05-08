@@ -10,9 +10,7 @@ import pl.dotnet.main.config.SwaggerConfig;
 @EnableAsync
 @Import(SwaggerConfig.class)
 public class MainApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(MainApplication.class, args);
     }
-
 }

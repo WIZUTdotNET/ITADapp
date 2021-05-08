@@ -8,10 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -31,7 +28,6 @@ public class Event {
     private String description;
 
     private Instant startDate;
-    private Instant endDate;
 
     @Nullable
     private Long availableTickets;

@@ -1,7 +1,6 @@
 package pl.dotnet.main.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,11 +10,7 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class EventDTO {
-
-    @NotNull
-    private Long eventId;
+public class CreateLectureDTO {
 
     @NotNull
     private String name;
@@ -24,8 +19,8 @@ public class EventDTO {
     private String description;
 
     @NotNull
-    private String startDate;
+    private Instant startDate;
 
     @NotNull
-    private UserDTO owner;
+    private Long eventId;
 }
