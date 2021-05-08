@@ -33,12 +33,12 @@ public class EventPartnerController {
     }
 
     @GetMapping("/findInEvent")
-    public ResponseEntity<List<EventPartnerDTO>> getInEvent(@RequestParam Long eventId) {
+    public ResponseEntity<List<EventPartnerDTO>> getPartnersFromEvent(@RequestParam Long eventId) {
         return eventPartnerService.findByEventId(eventId);
     }
 
     @GetMapping("/findById")
-    public ResponseEntity<EventPartnerDTO> getById(@RequestParam Long partnerId) {
+    public ResponseEntity<EventPartnerDTO> getPartnerById(@RequestParam Long partnerId) {
         return eventPartnerService.findById(partnerId);
     }
 }

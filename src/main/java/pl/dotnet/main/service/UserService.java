@@ -28,6 +28,11 @@ public class UserService {
         return username;
     }
 
+    public User getCurrentUser() {
+        String username = getCurrentUserName();
+        return userRepository.findByUsername(username).orElseThrow(()->new NotFoundRequestException("Co ty tu robisz?"));
+    }
+
     public boolean validateUser(User user) {
         Optional<User> userFromDBUsername = userRepository.findByUsername(user.getUsername());
         Optional<User> userFromDBEmail = userRepository.findByEmail(user.getEmail());

@@ -37,7 +37,7 @@ public class SpeakerController {
     }
 
     @GetMapping("/getSpeaker")
-    public SpeakerDTO getSpeaker(@RequestParam Long speakerId) {
+    public SpeakerDTO getSpeakerById(@RequestParam Long speakerId) {
         return speakerService.findSpeakerById(speakerId);
     }
 }

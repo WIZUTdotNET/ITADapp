@@ -81,6 +81,7 @@ public class Event {
         List<User> registeredUsers = getRegisteredUsers();
         registeredUsers.add(user);
         setAttendedUsers(registeredUsers);
+        setBookedTickets(getBookedTickets() + 1);
     }
 
     public void markUserAsAttended(User user) {

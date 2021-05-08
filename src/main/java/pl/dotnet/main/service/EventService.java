@@ -5,12 +5,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.dotnet.main.dao.model.Event;
+import pl.dotnet.main.dao.model.Ticket;
+import pl.dotnet.main.dao.model.User;
 import pl.dotnet.main.dao.repository.EventRepository;
+import pl.dotnet.main.dao.repository.TicketRepository;
 import pl.dotnet.main.dao.repository.UserRepository;
 import pl.dotnet.main.dto.Event.CreateEventDTO;
 import pl.dotnet.main.dto.Event.DetailedEventDTO;
 import pl.dotnet.main.dto.Event.EventDTO;
 import pl.dotnet.main.dto.Event.UpdateEventDTO;
+import pl.dotnet.main.expections.EventFullException;
 import pl.dotnet.main.expections.NotFoundRequestException;
 import pl.dotnet.main.mapper.EventMapper;
 
@@ -28,6 +32,7 @@ public class EventService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final EventMapper eventMapper;
+    private final TicketRepository ticketRepository;
 
     public List<EventDTO> findAll() {
         return eventRepository.findAll().stream()
@@ -46,15 +51,17 @@ public class EventService {
     }
 
     public ResponseEntity<EventDTO> addEvent(CreateEventDTO event) {
-        String username = userService.getCurrentUserName();
+        User currentUser = userService.getCurrentUser();
         Event newEvent = Event.builder()
                 .name(event.getName())
                 .description(event.getDescription())
                 .startDate(event.getStartTime())
-                .owner(userRepository.findByUsername(username).orElseThrow(() -> new NotFoundRequestException("User not found")))
+                .owner(currentUser)
                 .build();
-
         eventRepository.save(newEvent);
+
+        currentUser.addEventToOwned(newEvent);
+        userRepository.save(currentUser);
         return new ResponseEntity<>(eventMapper.eventToDto(newEvent), OK);
     }
 
@@ -87,5 +94,29 @@ public class EventService {
 
         eventRepository.deleteById(id);
         return new ResponseEntity<>("Deletion Successful", OK);
+    }
+
+    public ResponseEntity<String> registerToEvent(Long eventId) {
+        User currentUser = userService.getCurrentUser();
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException("Event not found"));
+
+        if (event.getAvailableTickets() <= event.getBookedTickets()) {
+            throw new EventFullException("No tickets available");
+        }
+
+        event.registerUser(currentUser);
+        eventRepository.save(event);
+
+        currentUser.registerOnEvent(event);
+        userRepository.save(currentUser);
+        Ticket ticket = Ticket.builder()
+                .event(event)
+                .user(currentUser)
+                .price(event.getTicketPrice())
+                .isPayed(false)
+                .build();
+
+        ticketRepository.save(ticket);
+        return new ResponseEntity<String>("xd", OK);
     }
 }
