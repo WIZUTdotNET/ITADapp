@@ -37,5 +37,4 @@ class MailService {
             throw new ConnectException("Exception occurred when sending mail to " + notificationEmail.getRecipient(), e);
         }
     }
-
 }

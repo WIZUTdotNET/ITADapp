@@ -3,10 +3,10 @@ package pl.dotnet.main.api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dotnet.main.dao.model.Event;
 import pl.dotnet.main.dto.Event.CreateEventDTO;
 import pl.dotnet.main.dto.Event.DetailedEventDTO;
 import pl.dotnet.main.dto.Event.EventDTO;
+import pl.dotnet.main.dto.Event.UpdateEventDTO;
 import pl.dotnet.main.service.EventService;
 
 import java.util.List;
@@ -38,8 +38,8 @@ public class EventController {
     }
 
     @PutMapping
-    public ResponseEntity<String> updateEvent(@RequestBody Event event) {
-        return eventService.update(event);
+    public ResponseEntity<String> updateEvent(@RequestBody UpdateEventDTO event) {
+        return eventService.updateEvent(event);
     }
 
     @DeleteMapping

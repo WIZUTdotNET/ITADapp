@@ -1,7 +1,6 @@
 package pl.dotnet.main.service;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +11,7 @@ import pl.dotnet.main.dao.repository.UserRepository;
 import pl.dotnet.main.dto.Event.CreateEventDTO;
 import pl.dotnet.main.dto.Event.DetailedEventDTO;
 import pl.dotnet.main.dto.Event.EventDTO;
+import pl.dotnet.main.dto.Event.UpdateEventDTO;
 import pl.dotnet.main.expections.ConnectException;
 import pl.dotnet.main.mapper.EventMapper;
 
@@ -24,7 +24,6 @@ import static org.springframework.http.HttpStatus.OK;
 @Service
 @AllArgsConstructor
 @Transactional
-@Slf4j
 public class EventService {
 
     private final EventRepository eventRepository;
@@ -48,7 +47,6 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
-
     public ResponseEntity<EventDTO> addEvent(CreateEventDTO event) {
         String username = userService.getCurrentUserName();
         Event newEvent = Event.builder()
@@ -59,21 +57,30 @@ public class EventService {
                 .build();
 
         eventRepository.save(newEvent);
-
         return new ResponseEntity<>(eventMapper.eventToDto(newEvent), OK);
     }
 
-    //todo rewrite this use UpdateEventDTO
-    public ResponseEntity<String> update(Event newEvent) {
+    public ResponseEntity<String> updateEvent(UpdateEventDTO eventDTO) {
         User user = userRepository.findByUsername(userService.getCurrentUserName()).orElseThrow(() -> new ConnectException("User not found"));
-        Event oldEvent = eventRepository.findById(newEvent.getEventId()).orElseThrow(() -> new ConnectException("Event not found"));
+        Event oldEvent = eventRepository.findById(eventDTO.getEventId()).orElseThrow(() -> new ConnectException("Event not found"));
 
         if (!userRepository.findById(oldEvent.getOwner().getUserId()).orElseThrow().equals(user))
             return new ResponseEntity<>("", FORBIDDEN);
 
-        newEvent.setOwner(user);
+        Event newEvent = Event.builder()
+                .eventId(oldEvent.getEventId())
+                .name(eventDTO.getName())
+                .description(eventDTO.getDescription())
+                .availableTickets(eventDTO.getAvailableTickets())
+                .bookedTickets(eventDTO.getBookedTickets())
+                .ticketPrice(eventDTO.getTicketPrice())
+                .owner(oldEvent.getOwner())
+                .partners(oldEvent.getPartners())
+                .lectures(oldEvent.getLectures())
+                .registeredUsers(oldEvent.getRegisteredUsers())
+                .attendedUsers(oldEvent.getAttendedUsers())
+                .build();
         eventRepository.save(newEvent);
-
         return new ResponseEntity<>("Update Successful", OK);
     }
 
@@ -85,7 +92,6 @@ public class EventService {
             return new ResponseEntity<>("", FORBIDDEN);
 
         eventRepository.deleteById(id);
-
         return new ResponseEntity<>("Deletion Successful", OK);
     }
 }

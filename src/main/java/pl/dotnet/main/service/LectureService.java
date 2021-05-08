@@ -83,7 +83,6 @@ public class LectureService {
                     .build();
             lectureRepository.save(newLecture);
             return new ResponseEntity<>(OK);
-
         }
         return new ResponseEntity<>(FORBIDDEN);
     }
@@ -111,18 +110,13 @@ public class LectureService {
         if (userService.isCurrentUserNotTheOwnerOfThisEvent(lecture.getEvent()))
             return new ResponseEntity<>(FORBIDDEN);
 
-        List<Speaker> speakerList = lecture.getSpeakers();
-        speakerList.add(speaker);
-        lecture.setSpeakers(speakerList);
-
+        lecture.addSpeakerToLecture(speaker);
         lectureRepository.save(lecture);
-
         return new ResponseEntity<>(OK);
     }
 
     public ResponseEntity<String> removeSpeakerFromLecture(Long speakerId, Long lectureId) {
         Speaker speaker = speakerRepository.findById(speakerId).orElseThrow();
-
         Lecture lecture = lectureRepository.findById(lectureId).orElseThrow();
 
         if (!lecture.getEvent().equals(speaker.getEvent()))
@@ -131,12 +125,8 @@ public class LectureService {
         if (userService.isCurrentUserNotTheOwnerOfThisEvent(lecture.getEvent()))
             return new ResponseEntity<>(FORBIDDEN);
 
-        List<Speaker> speakerList = lecture.getSpeakers();
-        speakerList.remove(speaker);
-        lecture.setSpeakers(speakerList);
-
+        lecture.removeSpeakerFromLecture(speaker);
         lectureRepository.save(lecture);
-
         return new ResponseEntity<>(OK);
     }
 }
