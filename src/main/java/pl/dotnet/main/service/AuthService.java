@@ -32,6 +32,7 @@ import static org.springframework.http.HttpStatus.*;
 @Service
 @AllArgsConstructor
 @Slf4j
+@Transactional
 public class AuthService {
 
     private final VerificationTokenRepository verificationTokenRepository;
@@ -43,7 +44,6 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
     private final UserService userService;
 
-    @Transactional
     public ResponseEntity<String> signup(RegisterRequestDTO registerRequestDTO) {
         User user = User.builder()
                 .username(registerRequestDTO.getUsername())
@@ -92,7 +92,6 @@ public class AuthService {
         return new ResponseEntity<>("Account Activated Successfully", OK);
     }
 
-    @Transactional
     void fetchUserAndEnable(VerificationToken verificationToken) {
         String username = verificationToken.getUser().getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(() -> new ConnectException("User not found with name - " + username));

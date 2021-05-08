@@ -1,7 +1,6 @@
 package pl.dotnet.main.service;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +23,6 @@ import static org.springframework.http.HttpStatus.OK;
 @Service
 @AllArgsConstructor
 @Transactional
-@Slf4j
 public class EventService {
 
     private final EventRepository eventRepository;
@@ -59,7 +57,6 @@ public class EventService {
                 .build();
 
         eventRepository.save(newEvent);
-
         return new ResponseEntity<>(eventMapper.eventToDto(newEvent), OK);
     }
 
@@ -73,7 +70,6 @@ public class EventService {
 
         newEvent.setOwner(user);
         eventRepository.save(newEvent);
-
         return new ResponseEntity<>("Update Successful", OK);
     }
 
@@ -85,7 +81,6 @@ public class EventService {
             return new ResponseEntity<>("", FORBIDDEN);
 
         eventRepository.deleteById(id);
-
         return new ResponseEntity<>("Deletion Successful", OK);
     }
 }

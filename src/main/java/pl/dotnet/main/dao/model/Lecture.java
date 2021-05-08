@@ -54,7 +54,7 @@ public class Lecture {
         setSpeakers(speakers);
     }
 
-    public void removeUserFromLecture(Speaker speaker) {
+    public void removeSpeakerFromLecture(Speaker speaker) {
         List<Speaker> speakers = getSpeakers();
         speakers.remove(speaker);
         setSpeakers(speakers);

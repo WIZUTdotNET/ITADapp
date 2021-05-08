@@ -3,6 +3,7 @@ package pl.dotnet.main.service;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.dotnet.main.dao.model.Event;
 import pl.dotnet.main.dao.model.Speaker;
 import pl.dotnet.main.dao.repository.EventRepository;
@@ -20,6 +21,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class SpeakerService {
 
     private final SpeakerRepository speakerRepository;

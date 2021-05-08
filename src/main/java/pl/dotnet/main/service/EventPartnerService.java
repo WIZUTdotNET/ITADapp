@@ -74,7 +74,6 @@ public class EventPartnerService {
                 .build();
 
         eventPartnerRepository.save(newEventPartner);
-
         return new ResponseEntity<>("", OK);
     }
 
