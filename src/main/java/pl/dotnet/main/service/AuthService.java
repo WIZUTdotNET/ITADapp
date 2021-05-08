@@ -27,8 +27,7 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.springframework.http.HttpStatus.EXPECTATION_FAILED;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @Service
 @AllArgsConstructor
@@ -62,8 +61,9 @@ public class AuthService {
             String token = generateVerifivationToken(user);
 
             mailService.sendMail(new NotificationEmail("Potwierdzenie rejestracji",
-                    user.getEmail(), "Aby aktywować konto kliknij w poniższy link: " +
-                    "http://localhost:8080/api/auth/accountVerification/" + token));
+                    user.getEmail(), "Aby aktywować konto kliknij w poniższy link:</b>" +
+                    "Frontend: http://localhost:3000/accountVerification/" + token + "</b>" +
+                    "Backend: http://localhost:8080/api/auth/accountVerification/" + token));
             return new ResponseEntity<>("User Registration Successful", OK);
         }
 
@@ -80,10 +80,16 @@ public class AuthService {
         return token;
     }
 
-    public void verifyAccount(String token) {
+    public ResponseEntity<String> verifyAccount(String token) {
         Optional<VerificationToken> verificationToken = verificationTokenRepository.findByToken(token);
+
+        if (verificationToken.isEmpty()) {
+            return new ResponseEntity<>("Account already activated or token not found", NOT_FOUND);
+        }
+
         fetchUserAndEnable(verificationToken.orElseThrow(() -> new ConnectException("Invalid Token")));
         verificationTokenRepository.deleteById(verificationToken.get().getId());
+        return new ResponseEntity<>("Account Activated Successfully", OK);
     }
 
     @Transactional
