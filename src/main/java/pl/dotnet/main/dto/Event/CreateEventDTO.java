@@ -20,4 +20,10 @@ public class CreateEventDTO {
 
     @NotNull
     private Instant startTime;
+
+    @NotNull
+    private Long availableTickets;
+
+    @NotNull
+    private Double ticketPrice;
 }

@@ -70,10 +70,10 @@ public class EventService {
                 .name(event.getName())
                 .description(event.getDescription())
                 .startDate(event.getStartTime())
+                .availableTickets(event.getAvailableTickets())
+                .ticketPrice(event.getTicketPrice())
                 .owner(currentUser)
-                .availableTickets(1000L)
                 .bookedTickets(0L)
-                .ticketPrice(0D)
                 .build();
 
         currentUser.addEventToOwned(eventRepository.save(newEvent));
@@ -98,8 +98,8 @@ public class EventService {
         Event event = eventRepository.findById(id).orElseThrow(() -> new NotFoundRequestException("Event not found"));
 
         userService.isCurrentUserNotTheOwnerOfThisEvent(event);
-        userService.getCurrentUser().removeEventFromOwned(event);
 
+//        userService.getCurrentUser().removeEventFromOwned(event);
 //        event.getPartners().forEach(eventPartnerRepository::delete);
 //        event.getLectures().forEach(lectureRepository::delete);
 //        event.getRegisteredUsers().forEach(ticket -> ticket.setEvent(null));
