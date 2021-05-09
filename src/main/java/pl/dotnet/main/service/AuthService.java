@@ -22,6 +22,7 @@ import pl.dotnet.main.dto.Security.LoginRequestDTO;
 import pl.dotnet.main.dto.Security.RefreshTokenRequestDTO;
 import pl.dotnet.main.dto.Security.RegisterRequestDTO;
 import pl.dotnet.main.expections.ConnectException;
+import pl.dotnet.main.expections.NotFoundRequestException;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -58,7 +59,7 @@ public class AuthService {
         if (userService.validateUser(user)) {
             userRepository.save(user);
 
-            String token = generateVerifivationToken(user);
+            String token = generateVerificationToken(user);
 
             mailService.sendMail(new NotificationEmail("Potwierdzenie rejestracji",
                     user.getEmail(), "Aby aktywować konto kliknij w poniższy link:</b>" +
@@ -70,7 +71,7 @@ public class AuthService {
         return new ResponseEntity<>("Username or email taken", EXPECTATION_FAILED);
     }
 
-    private String generateVerifivationToken(User user) {
+    private String generateVerificationToken(User user) {
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
@@ -104,11 +105,13 @@ public class AuthService {
                 loginRequestDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         String token = jwtProvider.generateToken(authenticate);
+        User user = userRepository.findByUsername(loginRequestDTO.getUsername()).orElseThrow(() -> new NotFoundRequestException("User not found"));
         return AuthenticationResponseDTO.builder()
                 .authenticationToken(token)
                 .refreshToken(refreshTokenService.generateRefreshToken().getToken())
                 .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()).toString())
-                .username(loginRequestDTO.getUsername())
+                .username(user.getUsername())
+                .userId(user.getUserId())
                 .build();
     }
 

@@ -36,17 +36,17 @@ public class LectureController {
     }
 
     @PutMapping
-    public ResponseEntity<String> editSpeaker(@RequestBody CreateLectureDTO lectureDTO, @RequestParam Long lectureId) {
+    public ResponseEntity<String> updateLecture(@RequestBody CreateLectureDTO lectureDTO, @RequestParam Long lectureId) {
         return lectureService.editLectureById(lectureDTO, lectureId);
     }
 
     @GetMapping("/getLectureFromEvent")
-    public List<LectureDTO> getLectureFromEvent(@RequestParam Long eventId) {
+    public List<LectureDTO> getLecturesFromEvent(@RequestParam Long eventId) {
         return lectureService.findLecturesByEventId(eventId);
     }
 
     @GetMapping("/getLecture")
-    public LectureDTO getLecture(@RequestParam Long lectureId) {
+    public LectureDTO getLectureById(@RequestParam Long lectureId) {
         return lectureService.findLectureById(lectureId);
     }
 

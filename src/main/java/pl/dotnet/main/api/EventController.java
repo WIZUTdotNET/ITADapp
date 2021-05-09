@@ -18,17 +18,17 @@ public class EventController {
     private final EventService eventService;
 
     @GetMapping("/all")
-    public List<EventDTO> getAll() {
+    public List<EventDTO> getAllEvents() {
         return eventService.findAll();
     }
 
     @GetMapping("/findById")
-    public DetailedEventDTO getById(@RequestParam Long id) {
+    public DetailedEventDTO getEventById(@RequestParam Long id) {
         return eventService.findById(id);
     }
 
     @GetMapping("/findByName")
-    public Iterable<EventDTO> getByName(@RequestParam String name) {
+    public Iterable<EventDTO> getEventByName(@RequestParam String name) {
         return eventService.findByName(name);
     }
 
@@ -45,5 +45,10 @@ public class EventController {
     @DeleteMapping
     public ResponseEntity<String> deleteEvent(@RequestParam Long id) {
         return eventService.deleteById(id);
+    }
+
+    @PostMapping("/registerOnEvent")
+    public ResponseEntity<String> registerOnEvent(@RequestParam Long eventId){
+        return eventService.registerToEvent(eventId);
     }
 }
