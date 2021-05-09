@@ -13,8 +13,10 @@ public class UpdateEventTicketsDTo {
 
     @NotNull
     private Long eventId;
+
     @NotNull
     private Long availableTickets;
+
     @NotNull
     private Double ticketPrice;
 }
