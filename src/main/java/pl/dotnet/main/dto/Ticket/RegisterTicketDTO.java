@@ -1,7 +1,6 @@
-package pl.dotnet.main.dto.Event;
+package pl.dotnet.main.dto.Ticket;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,8 +9,8 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class UpdateEventDTO {
+public class RegisterTicketDTO {
+
     @NotNull
     private Long eventId;
 
@@ -19,14 +18,5 @@ public class UpdateEventDTO {
     private String name;
 
     @NotNull
-    private String description;
-
-    @NotNull
-    private String startDate;
-
-    @NotNull
-    private Long availableTickets;
-
-    @NotNull
-    private Double ticketPrice;
+    private String surname;
 }

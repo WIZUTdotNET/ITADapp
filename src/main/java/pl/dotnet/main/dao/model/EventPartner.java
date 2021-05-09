@@ -18,7 +18,7 @@ public class EventPartner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long eventPartnerId;
+    private Long partnerId;
 
     @NotEmpty
     private String name;

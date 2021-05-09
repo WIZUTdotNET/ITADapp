@@ -1,19 +1,19 @@
-package pl.dotnet.main.dto.Event;
+package pl.dotnet.main.dto.Lecture;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class UpdateEventDTO {
+public class UpdateLectureDTO {
+
     @NotNull
-    private Long eventId;
+    private Long lectureId;
 
     @NotNull
     private String name;
@@ -22,11 +22,5 @@ public class UpdateEventDTO {
     private String description;
 
     @NotNull
-    private String startDate;
-
-    @NotNull
-    private Long availableTickets;
-
-    @NotNull
-    private Double ticketPrice;
+    private Instant startDate;
 }

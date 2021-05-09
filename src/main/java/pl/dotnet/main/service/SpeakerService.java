@@ -10,6 +10,7 @@ import pl.dotnet.main.dao.repository.EventRepository;
 import pl.dotnet.main.dao.repository.SpeakerRepository;
 import pl.dotnet.main.dto.Speaker.CreateSpeakerDTO;
 import pl.dotnet.main.dto.Speaker.SpeakerDTO;
+import pl.dotnet.main.dto.Speaker.UpdateSpeakerDTO;
 import pl.dotnet.main.expections.NotFoundRequestException;
 import pl.dotnet.main.mapper.SpeakerMapper;
 
@@ -40,7 +41,7 @@ public class SpeakerService {
         return speakerMapper.speakerToDto(speakerRepository.findById(speakerId).orElseThrow(() -> new NotFoundRequestException("Speaker not found")));
     }
 
-    public ResponseEntity<?> addSpeaker(CreateSpeakerDTO createSpeakerDTO) {
+    public ResponseEntity<SpeakerDTO> addSpeaker(CreateSpeakerDTO createSpeakerDTO) {
         Event event = eventRepository.findById(createSpeakerDTO.getEventId()).orElseThrow(() -> new NotFoundRequestException("Event not found"));
         userService.isCurrentUserNotTheOwnerOfThisEvent(event);
 
@@ -51,43 +52,35 @@ public class SpeakerService {
                 .event(event)
                 .build();
 
-        speakerRepository.save(newSpeaker);
-        return new ResponseEntity<>(OK);
+        event.addSpeakerToEvent(speakerRepository.save(newSpeaker));
+        return new ResponseEntity<>(speakerMapper.speakerToDto(newSpeaker), OK);
     }
 
-    public ResponseEntity<?> deleteSpeakerById(Long speakerId, Long eventId) {
+    public ResponseEntity<String> deleteSpeakerById(Long speakerId, Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException("Event not found"));
         userService.isCurrentUserNotTheOwnerOfThisEvent(event);
 
         Speaker speaker = speakerRepository.findById(speakerId).orElseThrow(() -> new NotFoundRequestException("Speaker not found"));
 
         if (speaker.getEvent().equals(event)) {
+            event.removeSpeakerFromEvent(speaker);
+            speaker.getLectures().forEach(lecture -> lecture.removeSpeakerFromLecture(speaker));
             speakerRepository.deleteById(speakerId);
             return new ResponseEntity<>(OK);
         }
         return new ResponseEntity<>(FORBIDDEN);
     }
 
-    public ResponseEntity<?> editSpeakerById(CreateSpeakerDTO createSpeakerDTO, Long speakerId) {
-        Event event = eventRepository.findById(createSpeakerDTO.getEventId()).orElseThrow(() -> new NotFoundRequestException("Event not found"));
+    public ResponseEntity<String> editSpeakerById(UpdateSpeakerDTO speakerDTO) {
+        Speaker oldSpeaker = speakerRepository.findById(speakerDTO.getSpeakerId()).orElseThrow(() -> new NotFoundRequestException("Speaker not found"));
+
+        Event event = oldSpeaker.getEvent();
         userService.isCurrentUserNotTheOwnerOfThisEvent(event);
 
-        Speaker oldSpeaker = speakerRepository.findById(speakerId).orElseThrow(() -> new NotFoundRequestException("Speaker not found"));
+        oldSpeaker.setName(speakerDTO.getName());
+        oldSpeaker.setSurname(speakerDTO.getSurname());
+        oldSpeaker.setDescription(speakerDTO.getDescription());
 
-        if (oldSpeaker.getEvent().equals(event)) {
-
-            Speaker newSpeaker = Speaker.builder()
-                    .speakerId(oldSpeaker.getSpeakerId())
-                    .name(createSpeakerDTO.getName())
-                    .surname(createSpeakerDTO.getSurname())
-                    .description(createSpeakerDTO.getDescription())
-                    .event(event)
-                    .build();
-
-            speakerRepository.save(newSpeaker);
-
-            return new ResponseEntity<>(OK);
-        }
-        return new ResponseEntity<>(FORBIDDEN);
+        return new ResponseEntity<>(OK);
     }
 }

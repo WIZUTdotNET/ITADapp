@@ -30,7 +30,7 @@ public class UserService {
 
     public User getCurrentUser() {
         String username = getCurrentUserName();
-        return userRepository.findByUsername(username).orElseThrow(()->new NotFoundRequestException("Co ty tu robisz?"));
+        return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundRequestException("Co ty tu robisz?"));
     }
 
     public boolean validateUser(User user) {
@@ -40,10 +40,10 @@ public class UserService {
         return userFromDBUsername.isEmpty() && userFromDBEmail.isEmpty();
     }
 
-    public boolean isCurrentUserNotTheOwnerOfThisEvent(Event event) {
+    public void isCurrentUserNotTheOwnerOfThisEvent(Event event) {
         User currentUser = userRepository.findByUsername(getCurrentUserName()).orElseThrow(() -> new NotFoundRequestException("User not found"));
         if (!userRepository.findById(event.getOwner().getUserId()).orElseThrow(() -> new UnauthorizedRequestException("User is not the owner of this event")).equals(currentUser)) {
             throw new UnauthorizedRequestException("User is not the owner of this event");
-        } else return false;
+        }
     }
 }

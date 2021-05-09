@@ -7,6 +7,7 @@ import pl.dotnet.main.dao.model.Lecture;
 import pl.dotnet.main.dto.Lecture.LectureDTO;
 import pl.dotnet.main.dto.Speaker.SpeakerDTO;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,8 @@ public interface LectureMapper {
 
     @Named("getSpeakersDTO")
     default List<SpeakerDTO> getSpeakersDTO(Lecture lecture) {
+        if (lecture.getSpeakers() == null)
+            return Collections.emptyList();
         return lecture.getSpeakers().stream()
                 .map(speaker -> SpeakerDTO.builder()
                         .speakerId(speaker.getSpeakerId())

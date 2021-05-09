@@ -35,8 +35,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/auth/**")
-                .permitAll()
                 .antMatchers(HttpMethod.GET, "/api/event/**")
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/api/speaker/**")
@@ -50,7 +48,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/swagger-resources/**",
                         "/configuration/security",
                         "/swagger-ui/**",
-                        "/webjars/**")
+                        "/webjars/**",
+                        "/api/auth/**",
+                        "/api/ticket/ticketVerification/**"
+                )
                 .permitAll()
                 .anyRequest()
                 .authenticated();

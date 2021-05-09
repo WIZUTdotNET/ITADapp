@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.dotnet.main.dto.Lecture.CreateLectureDTO;
 import pl.dotnet.main.dto.Lecture.LectureDTO;
+import pl.dotnet.main.dto.Lecture.UpdateLectureDTO;
 import pl.dotnet.main.service.LectureService;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class LectureController {
     private final LectureService lectureService;
 
     @PostMapping
-    public ResponseEntity<String> addLecture(@RequestBody CreateLectureDTO lectureDTO) {
+    public ResponseEntity<LectureDTO> addLecture(@RequestBody CreateLectureDTO lectureDTO) {
         return lectureService.addLecture(lectureDTO);
     }
 
@@ -26,18 +27,18 @@ public class LectureController {
     }
 
     @DeleteMapping("/removeSpeaker")
-    public ResponseEntity<String> removeSpeakerToLecture(@RequestParam Long speakerId, Long lectureId) {
+    public ResponseEntity<String> removeSpeakerFromLecture(@RequestParam Long speakerId, Long lectureId) {
         return lectureService.removeSpeakerFromLecture(speakerId, lectureId);
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteLecture(@RequestParam Long lectureId, Long eventId) {
-        return lectureService.deleteLecture(lectureId, eventId);
+    public ResponseEntity<String> deleteLecture(@RequestParam Long lectureId) {
+        return lectureService.deleteLecture(lectureId);
     }
 
     @PutMapping
-    public ResponseEntity<String> updateLecture(@RequestBody CreateLectureDTO lectureDTO, @RequestParam Long lectureId) {
-        return lectureService.editLectureById(lectureDTO, lectureId);
+    public ResponseEntity<String> updateLecture(@RequestBody UpdateLectureDTO lectureDTO) {
+        return lectureService.editLectureById(lectureDTO);
     }
 
     @GetMapping("/getLectureFromEvent")
