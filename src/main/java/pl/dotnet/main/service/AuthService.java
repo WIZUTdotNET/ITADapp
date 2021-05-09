@@ -22,6 +22,7 @@ import pl.dotnet.main.dto.Security.LoginRequestDTO;
 import pl.dotnet.main.dto.Security.RefreshTokenRequestDTO;
 import pl.dotnet.main.dto.Security.RegisterRequestDTO;
 import pl.dotnet.main.expections.ConnectException;
+import pl.dotnet.main.expections.NotFoundRequestException;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -104,11 +105,13 @@ public class AuthService {
                 loginRequestDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         String token = jwtProvider.generateToken(authenticate);
+        User user = userRepository.findByUsername(loginRequestDTO.getUsername()).orElseThrow(() -> new NotFoundRequestException("User not found"));
         return AuthenticationResponseDTO.builder()
                 .authenticationToken(token)
                 .refreshToken(refreshTokenService.generateRefreshToken().getToken())
                 .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()).toString())
-                .username(loginRequestDTO.getUsername())
+                .username(user.getUsername())
+                .userId(user.getUserId())
                 .build();
     }
 
