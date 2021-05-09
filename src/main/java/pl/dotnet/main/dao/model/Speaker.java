@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -29,6 +30,17 @@ public class Speaker {
     @NotNull
     private String description;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     private Event event;
+
+    @ManyToMany(cascade = CascadeType.DETACH)
+    private List<Lecture> lectures;
+
+    public void addLecture(Lecture lecture) {
+        lectures.add(lecture);
+    }
+
+    public void removeLecture(Lecture lecture) {
+        lectures.remove(lecture);
+    }
 }

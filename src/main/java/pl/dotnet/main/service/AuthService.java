@@ -61,7 +61,7 @@ public class AuthService {
 
             String token = generateVerificationToken(user);
 
-            mailService.sendMail(new NotificationEmail("Potwierdzenie rejestracji",
+            mailService.sendMail(new NotificationEmail("Potwierdzenie rejestracji do aplikacji",
                     user.getEmail(), "Aby aktywować konto kliknij w poniższy link:</b>" +
                     "Frontend: http://localhost:3000/accountVerification/" + token + "</b>" +
                     "Backend: http://localhost:8080/api/auth/accountVerification/" + token));

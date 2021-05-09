@@ -31,7 +31,7 @@ public interface EventMapper {
         return UserDTO.builder()
                 .surname(event.getOwner().getSurname())
                 .name(event.getOwner().getName())
-                .id(event.getOwner().getUserId())
+                .userId(event.getOwner().getUserId())
                 .email(event.getOwner().getEmail())
                 .build();
     }
@@ -41,7 +41,7 @@ public interface EventMapper {
 
         return event.getPartners().stream()
                 .map(eventPartner -> EventPartnerDTO.builder()
-                        .eventPartnerId(eventPartner.getEventPartnerId())
+                        .eventPartnerId(eventPartner.getPartnerId())
                         .name(eventPartner.getName())
                         .description(eventPartner.getDescription())
                         .eventId(event.getEventId())

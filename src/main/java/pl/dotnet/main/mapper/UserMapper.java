@@ -1,18 +1,11 @@
-//package pl.dotnet.main.mapper;
-//
-//import org.mapstruct.InheritInverseConfiguration;
-//import org.mapstruct.Mapper;
-//import org.mapstruct.Mapping;
-//import pl.dotnet.main.dao.model.User;
-//import pl.dotnet.main.dto.User.UserDTO;
-//
-//@Mapper
-//public interface UserMapper {
-//
-//    @Mapping(target = "id", source = "userId")
-//    UserDTO userToDto(User user);
-//
-//    @Mapping(target = "userId", source = "id")
-//    @InheritInverseConfiguration
-//    User dtoToUser(UserDTO userDto);
-//}
+package pl.dotnet.main.mapper;
+
+import org.mapstruct.Mapper;
+import pl.dotnet.main.dao.model.User;
+import pl.dotnet.main.dto.User.UserDTO;
+
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+
+    UserDTO userToDto(User user);
+}

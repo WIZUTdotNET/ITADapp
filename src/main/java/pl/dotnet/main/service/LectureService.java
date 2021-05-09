@@ -12,6 +12,7 @@ import pl.dotnet.main.dao.repository.LectureRepository;
 import pl.dotnet.main.dao.repository.SpeakerRepository;
 import pl.dotnet.main.dto.Lecture.CreateLectureDTO;
 import pl.dotnet.main.dto.Lecture.LectureDTO;
+import pl.dotnet.main.dto.Lecture.UpdateLectureDTO;
 import pl.dotnet.main.expections.NotFoundRequestException;
 import pl.dotnet.main.mapper.LectureMapper;
 
@@ -38,13 +39,13 @@ public class LectureService {
     }
 
     public List<LectureDTO> findLecturesByEventId(Long eventId) {
-        Event event = eventRepository.findById(eventId).orElseThrow();
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException("Event not found"));
         return lectureRepository.findAllByEvent(event).stream()
                 .map(lectureMapper::lectureToDTO)
                 .collect(Collectors.toList());
     }
 
-    public ResponseEntity<String> addLecture(CreateLectureDTO lectureDTO) {
+    public ResponseEntity<LectureDTO> addLecture(CreateLectureDTO lectureDTO) {
         Event event = eventRepository.findById(lectureDTO.getEventId()).orElseThrow(() -> new NotFoundRequestException("Event not found"));
         userService.isCurrentUserNotTheOwnerOfThisEvent(event);
 
@@ -56,48 +57,30 @@ public class LectureService {
                 .build();
 
         event.addLectureToEvent(newLecture);
-        lectureRepository.save(newLecture);
-        eventRepository.save(event);
+
+        return new ResponseEntity<>(lectureMapper.lectureToDTO(lectureRepository.save(newLecture)), OK);
+    }
+
+    public ResponseEntity<String> editLectureById(UpdateLectureDTO lectureDTO) {
+
+        Lecture oldLecture = lectureRepository.findById(lectureDTO.getLectureId()).orElseThrow(() -> new NotFoundRequestException("Lecture not found"));
+
+        userService.isCurrentUserNotTheOwnerOfThisEvent(oldLecture.getEvent());
+
+        oldLecture.setName(lectureDTO.getName());
+        oldLecture.setDescription(lectureDTO.getDescription());
+        oldLecture.setStartDate(lectureDTO.getStartDate());
         return new ResponseEntity<>(OK);
     }
 
-    public ResponseEntity<String> editLectureById(CreateLectureDTO lectureDTO, Long lectureId) {
-        Event event = eventRepository.findById(lectureDTO.getEventId()).orElseThrow(() -> new NotFoundRequestException("Event not found"));
-        userService.isCurrentUserNotTheOwnerOfThisEvent(event);
-
-        Lecture oldLecture = lectureRepository.findById(lectureId).orElseThrow();
-
-        if (oldLecture.getEvent().equals(event)) {
-            Lecture newLecture = Lecture.builder()
-                    .lectureId(oldLecture.getLectureId())
-                    .name(lectureDTO.getName())
-                    .description(lectureDTO.getDescription())
-                    .startDate(lectureDTO.getStartDate())
-                    .availableSeats(oldLecture.getAvailableSeats())
-                    .takenSeats(oldLecture.getTakenSeats())
-                    .event(event)
-                    .speakers(oldLecture.getSpeakers())
-                    .registeredUsers(oldLecture.getRegisteredUsers())
-                    .attendedUsers(oldLecture.getAttendedUsers())
-                    .build();
-            lectureRepository.save(newLecture);
-            return new ResponseEntity<>(OK);
-        }
-        return new ResponseEntity<>(FORBIDDEN);
-    }
-
-    public ResponseEntity<String> deleteLecture(Long lectureId, Long eventId) {
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException("Event not found"));
-
-        userService.isCurrentUserNotTheOwnerOfThisEvent(event);
-
+    public ResponseEntity<String> deleteLecture(Long lectureId) {
         Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(() -> new NotFoundRequestException("Lecture not found"));
 
-        if (lecture.getEvent().equals(event)) {
-            lectureRepository.deleteById(lectureId);
-            return new ResponseEntity<>(OK);
-        }
-        return new ResponseEntity<>(FORBIDDEN);
+        userService.isCurrentUserNotTheOwnerOfThisEvent(lecture.getEvent());
+
+        lecture.getEvent().removeLectureFromEvent(lecture);
+        lectureRepository.deleteById(lectureId);
+        return new ResponseEntity<>(OK);
     }
 
     public ResponseEntity<String> addSpeakerToLecture(Long speakerId, Long lectureId) {
@@ -107,11 +90,10 @@ public class LectureService {
         if (!lecture.getEvent().equals(speaker.getEvent()))
             return new ResponseEntity<>(FORBIDDEN);
 
-        if (userService.isCurrentUserNotTheOwnerOfThisEvent(lecture.getEvent()))
-            return new ResponseEntity<>(FORBIDDEN);
+        userService.isCurrentUserNotTheOwnerOfThisEvent(lecture.getEvent());
 
         lecture.addSpeakerToLecture(speaker);
-        lectureRepository.save(lecture);
+        speaker.addLecture(lecture);
         return new ResponseEntity<>(OK);
     }
 
@@ -122,11 +104,11 @@ public class LectureService {
         if (!lecture.getEvent().equals(speaker.getEvent()))
             return new ResponseEntity<>(FORBIDDEN);
 
-        if (userService.isCurrentUserNotTheOwnerOfThisEvent(lecture.getEvent()))
-            return new ResponseEntity<>(FORBIDDEN);
+        userService.isCurrentUserNotTheOwnerOfThisEvent(lecture.getEvent());
 
         lecture.removeSpeakerFromLecture(speaker);
-        lectureRepository.save(lecture);
+        lecture.getEvent().removeSpeakerFromEvent(speaker);
+        speaker.removeLecture(lecture);
         return new ResponseEntity<>(OK);
     }
 }

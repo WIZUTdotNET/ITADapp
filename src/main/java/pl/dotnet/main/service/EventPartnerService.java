@@ -56,36 +56,28 @@ public class EventPartnerService {
         event.addPartnerToEvent(newEventPartner);
         eventPartnerRepository.save(newEventPartner);
         eventRepository.save(event);
-        return new ResponseEntity<>("", OK);
+        return new ResponseEntity<>(OK);
     }
 
     public ResponseEntity<String> editPartner(UpdateEventPartnerDTO eventPartnerDTO) {
         EventPartner oldEventPartner = eventPartnerRepository.findById(eventPartnerDTO.getEventPartnerId()).orElseThrow(() -> new NotFoundRequestException("Event partner not found"));
-
-        Event event = eventRepository.findById(oldEventPartner.getEventPartnerId()).orElseThrow(() -> new NotFoundRequestException("Event not found"));
-
+        Event event = oldEventPartner.getSponsoredEvent();
         userService.isCurrentUserNotTheOwnerOfThisEvent(event);
 
-        EventPartner newEventPartner = EventPartner.builder()
-                .eventPartnerId(oldEventPartner.getEventPartnerId())
-                .name(eventPartnerDTO.getName())
-                .description(eventPartnerDTO.getDescription())
-                .sponsoredEvent(event)
-                .build();
+        oldEventPartner.setName(eventPartnerDTO.getName());
+        oldEventPartner.setName(eventPartnerDTO.getDescription());
 
-        eventPartnerRepository.save(newEventPartner);
-        return new ResponseEntity<>("", OK);
+        return new ResponseEntity<>(OK);
     }
 
     public ResponseEntity<String> deletePartner(Long eventPartnerId) {
         EventPartner eventPartner = eventPartnerRepository.findById(eventPartnerId).orElseThrow(() -> new NotFoundRequestException("Event partner not found"));
-        Event event = eventRepository.findById(eventPartner.getSponsoredEvent().getEventId()).orElseThrow(() -> new NotFoundRequestException("Event not found"));
-
+        Event event = eventPartner.getSponsoredEvent();
         userService.isCurrentUserNotTheOwnerOfThisEvent(event);
 
         event.removePartnerFromEvent(eventPartner);
         eventRepository.save(event);
         eventPartnerRepository.deleteById(eventPartnerId);
-        return new ResponseEntity<String>("", OK);
+        return new ResponseEntity<>(OK);
     }
 }

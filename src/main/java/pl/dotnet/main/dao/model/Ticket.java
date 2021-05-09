@@ -22,6 +22,12 @@ public class Ticket {
 
     private Boolean isPayed;
 
+    private String name;
+
+    private String surname;
+
+    private String uuid;
+
     @ManyToOne
     private Event event;
 

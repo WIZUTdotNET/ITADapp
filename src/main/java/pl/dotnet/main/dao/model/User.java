@@ -38,36 +38,28 @@ public class User {
     private List<Event> ownedEvents;
 
     @ManyToMany
-    private List<Event> registeredOnEvents;
+    private List<Ticket> registeredOnEvents;
 
     @ManyToMany
-    private List<Event> attendedEvents;
+    private List<Ticket> attendedEvents;
 
     private Instant created;
 
     private Boolean isActive;
 
     public void addEventToOwned(Event event) {
-        List<Event> ownedEvents = getOwnedEvents();
         ownedEvents.add(event);
-        setOwnedEvents(ownedEvents);
     }
 
     public void removeEventFromOwned(Event event) {
-        List<Event> ownedEvents = getOwnedEvents();
         ownedEvents.remove(event);
-        setOwnedEvents(ownedEvents);
     }
 
-    public void registerOnEvent(Event event) {
-        List<Event> registeredOnEvents = getRegisteredOnEvents();
-        registeredOnEvents.add(event);
-        setRegisteredOnEvents(registeredOnEvents);
+    public void registerOnEvent(Ticket ticket) {
+        registeredOnEvents.add(ticket);
     }
 
-    public void attendEvent(Event event) {
-        List<Event> attendedEvents = getAttendedEvents();
-        attendedEvents.add(event);
-        setAttendedEvents(attendedEvents);
+    public void attendEvent(Ticket ticket) {
+        attendedEvents.add(ticket);
     }
 }

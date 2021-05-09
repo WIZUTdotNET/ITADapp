@@ -38,55 +38,50 @@ public class Event {
     @Nullable
     private Double ticketPrice;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     private User owner;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventPartner> partners;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Speaker> speakers;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Lecture> lectures;
 
-    @ManyToMany
-    private List<User> registeredUsers;
+    @ManyToMany(cascade = CascadeType.DETACH)
+    private List<Ticket> registeredUsers;
 
-    @ManyToMany
-    private List<User> attendedUsers;
+    @ManyToMany(cascade = CascadeType.DETACH)
+    private List<Ticket> attendedUsers;
 
     public void addPartnerToEvent(EventPartner partner) {
-        List<EventPartner> partners = getPartners();
         partners.add(partner);
-        setPartners(partners);
     }
 
     public void removePartnerFromEvent(EventPartner partner) {
-        List<EventPartner> partners = getPartners();
         partners.remove(partner);
-        setPartners(partners);
+    }
+
+    public void addSpeakerToEvent(Speaker speaker) {
+        speakers.add(speaker);
+    }
+
+    public void removeSpeakerFromEvent(Speaker speaker) {
+        speakers.remove(speaker);
     }
 
     public void addLectureToEvent(Lecture lecture) {
-        List<Lecture> lectures = getLectures();
         lectures.add(lecture);
-        setLectures(lectures);
     }
 
     public void removeLectureFromEvent(Lecture lecture) {
-        List<Lecture> lectures = getLectures();
         lectures.remove(lecture);
-        setLectures(lectures);
     }
 
-    public void registerUser(User user) {
-        List<User> registeredUsers = getRegisteredUsers();
+    public void registerUser(Ticket user) {
         registeredUsers.add(user);
-        setAttendedUsers(registeredUsers);
-        setBookedTickets(getBookedTickets() + 1);
-    }
-
-    public void markUserAsAttended(User user) {
-        List<User> attendedUsers = getAttendedUsers();
-        attendedUsers.add(user);
-        setAttendedUsers(attendedUsers);
+        bookedTickets++;
     }
 }

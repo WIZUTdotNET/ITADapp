@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.dotnet.main.dto.Speaker.CreateSpeakerDTO;
 import pl.dotnet.main.dto.Speaker.SpeakerDTO;
+import pl.dotnet.main.dto.Speaker.UpdateSpeakerDTO;
 import pl.dotnet.main.service.SpeakerService;
 
 import java.util.List;
@@ -17,18 +18,18 @@ public class SpeakerController {
     private final SpeakerService speakerService;
 
     @PostMapping
-    public ResponseEntity<?> addSpeaker(@RequestBody CreateSpeakerDTO createSpeakerDTO) {
-        return speakerService.addSpeaker(createSpeakerDTO);
+    public ResponseEntity<SpeakerDTO> addSpeaker(@RequestBody CreateSpeakerDTO speakerDTO) {
+        return speakerService.addSpeaker(speakerDTO);
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteSpeaker(@RequestParam Long speakerId, Long eventId) {
+    public ResponseEntity<String> deleteSpeaker(@RequestParam Long speakerId, Long eventId) {
         return speakerService.deleteSpeakerById(speakerId, eventId);
     }
 
     @PutMapping
-    public ResponseEntity<?> editSpeaker(@RequestBody CreateSpeakerDTO createSpeakerDTO, @RequestParam Long speakerId) {
-        return speakerService.editSpeakerById(createSpeakerDTO, speakerId);
+    public ResponseEntity<String> editSpeaker(@RequestBody UpdateSpeakerDTO speakerDTO) {
+        return speakerService.editSpeakerById(speakerDTO);
     }
 
     @GetMapping("/getSpeakersFormEvent")
