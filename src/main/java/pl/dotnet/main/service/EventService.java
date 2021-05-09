@@ -50,6 +50,14 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
+    public List<EventDTO> getCurrentUserEvent() {
+        User currentUser = userService.getCurrentUser();
+        return eventRepository.findByOwner(currentUser).stream()
+                .map(eventMapper::eventToDto)
+                .collect(Collectors.toList());
+    }
+
+
     public ResponseEntity<EventDTO> addEvent(CreateEventDTO event) {
         User currentUser = userService.getCurrentUser();
         Event newEvent = Event.builder()

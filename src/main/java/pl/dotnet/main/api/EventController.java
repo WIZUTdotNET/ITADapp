@@ -32,6 +32,9 @@ public class EventController {
         return eventService.findByName(name);
     }
 
+    @GetMapping("/currentUser")
+    public List<EventDTO> getCurrentUserEvent(){return  eventService.getCurrentUserEvent();}
+
     @PostMapping
     public ResponseEntity<EventDTO> addEvent(@RequestBody CreateEventDTO event) {
         return eventService.addEvent(event);
