@@ -39,7 +39,7 @@ public class LectureService {
     }
 
     public List<LectureDTO> findLecturesByEventId(Long eventId) {
-        Event event = eventRepository.findById(eventId).orElseThrow();
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException("Event not found"));
         return lectureRepository.findAllByEvent(event).stream()
                 .map(lectureMapper::lectureToDTO)
                 .collect(Collectors.toList());
@@ -63,7 +63,7 @@ public class LectureService {
 
     public ResponseEntity<String> editLectureById(UpdateLectureDTO lectureDTO) {
 
-        Lecture oldLecture = lectureRepository.findById(lectureDTO.getLectureId()).orElseThrow();
+        Lecture oldLecture = lectureRepository.findById(lectureDTO.getLectureId()).orElseThrow(() -> new NotFoundRequestException("Lecture not found"));
 
         userService.isCurrentUserNotTheOwnerOfThisEvent(oldLecture.getEvent());
 
