@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import pl.dotnet.main.dao.model.Lecture;
+import pl.dotnet.main.dao.model.Speaker;
 import pl.dotnet.main.dto.Lecture.LectureDTO;
 import pl.dotnet.main.dto.Speaker.SpeakerDTO;
 
@@ -17,6 +18,7 @@ public interface LectureMapper {
 
     @Mapping(target = "eventId", source = "lecture.event.eventId")
     @Mapping(target = "speakers", source = "lecture", qualifiedByName = "getSpeakersDTO")
+    @Mapping(target = "speakersIds", source = "lecture", qualifiedByName = "getSpeakersID")
     LectureDTO lectureToDTO(Lecture lecture);
 
     @Named("getSpeakersDTO")
@@ -32,6 +34,15 @@ public interface LectureMapper {
                         .eventId(speaker.getEvent().getEventId())
                         .build()
                 )
+                .collect(Collectors.toList());
+    }
+
+    @Named("getSpeakersID")
+    default List<Long> getSpeakersID(Lecture lecture) {
+        if (lecture.getSpeakers() == null)
+            return Collections.emptyList();
+        return lecture.getSpeakers().stream()
+                .map(Speaker::getSpeakerId)
                 .collect(Collectors.toList());
     }
 }

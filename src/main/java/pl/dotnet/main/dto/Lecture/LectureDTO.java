@@ -38,4 +38,7 @@ public class LectureDTO {
 
     @NotNull
     private List<SpeakerDTO> speakers;
+
+    @NotNull
+    private List<Long> speakersIds;
 }
