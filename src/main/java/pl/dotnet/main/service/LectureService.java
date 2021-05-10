@@ -107,7 +107,6 @@ public class LectureService {
         userService.isCurrentUserNotTheOwnerOfThisEvent(lecture.getEvent());
 
         lecture.removeSpeakerFromLecture(speaker);
-        lecture.getEvent().removeSpeakerFromEvent(speaker);
         speaker.removeLecture(lecture);
         return new ResponseEntity<>(OK);
     }
