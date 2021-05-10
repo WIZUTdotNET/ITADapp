@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import pl.dotnet.main.dao.model.Event;
+import pl.dotnet.main.dao.model.Speaker;
 import pl.dotnet.main.dto.Event.DetailedEventDTO;
 import pl.dotnet.main.dto.Event.EventDTO;
 import pl.dotnet.main.dto.EventPartner.EventPartnerDTO;
@@ -68,6 +69,9 @@ public interface EventMapper {
                                         .description(speaker.getDescription())
                                         .eventId(speaker.getEvent().getEventId())
                                         .build())
+                                .collect(Collectors.toList()))
+                        .speakersIds(lecture.getSpeakers().stream()
+                                .map(Speaker::getSpeakerId)
                                 .collect(Collectors.toList()))
                         .build())
                 .collect(Collectors.toList());
