@@ -5,14 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateTicketDTO {
+public class TicketDTO {
 
     @NotNull
-    private Long price;
+    private Double price;
 
     @NotNull
     private Boolean isPayed;
@@ -23,4 +22,12 @@ public class CreateTicketDTO {
     @NotNull
     private String surname;
 
+    @NotNull
+    private String uuid;
+
+    @NotNull
+    private String eventId;
+
+    @NotNull
+    private String userId;
 }

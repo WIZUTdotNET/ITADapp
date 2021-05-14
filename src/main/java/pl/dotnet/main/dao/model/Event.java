@@ -84,4 +84,8 @@ public class Event {
         registeredUsers.add(user);
         bookedTickets++;
     }
+
+    public void markAsAttended(Ticket user) {
+        attendedUsers.add(user);
+    }
 }

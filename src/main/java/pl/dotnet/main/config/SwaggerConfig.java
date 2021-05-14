@@ -32,7 +32,7 @@ public class SwaggerConfig {
     private ApiInfo getApiInfo() {
         return new ApiInfoBuilder()
                 .title("Connect API")
-                .version("0.81")
+                .version("0.82")
                 .description("API for ITADApp project")
                 .contact(new Contact("Koło naukowe .net", "https://dotnet.zut.edu.pl/", "dotnet.zut@outlook.com"))
                 .license("Apache License Version 2.0")

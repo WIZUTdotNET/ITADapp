@@ -45,4 +45,14 @@ public class AuthController {
         authService.logout(refreshTokenRequestDTO);
         return ResponseEntity.status(OK).body("Refresh Token Deleted Successfully!!");
     }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity<Object> sendEmailToChangePassword() {
+        return authService.sendChangePasswordEmail();
+    }
+
+    @GetMapping("/resetPassword/{token}")
+    public void changePassword(@PathVariable String token, @RequestBody String password) {
+        authService.resetPassword(token, password);
+    }
 }
