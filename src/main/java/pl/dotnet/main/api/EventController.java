@@ -1,11 +1,11 @@
 package pl.dotnet.main.api;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.dotnet.main.dto.Event.*;
-import pl.dotnet.main.dto.Ticket.CreateTicketDTO;
-import pl.dotnet.main.dto.Ticket.RegisterTicketDTO;
+import pl.dotnet.main.dto.Ticket.TicketDTO;
 import pl.dotnet.main.service.EventService;
 
 import java.util.List;
@@ -32,8 +32,8 @@ public class EventController {
     }
 
     @GetMapping("/currentUser")
-    public List<EventDTO> getCurrentUserEvent() {
-        return eventService.getCurrentUserEvent();
+    public List<EventDTO> getCurrentUserEvents() {
+        return eventService.getCurrentUserEvents();
     }
 
     @PostMapping
@@ -57,12 +57,23 @@ public class EventController {
     }
 
     @PostMapping("/registerOnEvent")
-    public ResponseEntity<String> registerOnEvent(@RequestBody RegisterTicketDTO ticketDTO) {
-        return eventService.registerToEvent(ticketDTO);
+    public ResponseEntity<String> registerOnEvent(@RequestParam Long eventId) {
+        return eventService.registerToEvent(eventId);
     }
 
     @GetMapping("/getRegisteredUsers")
-    public List<CreateTicketDTO> getRegisteredUsers(@RequestParam Long eventId) {
+    public List<TicketDTO> getUsersRegisteredOnEvent(@RequestParam Long eventId) {
         return eventService.getRegisteredUsers(eventId);
+    }
+
+    @PostMapping("/MarkPresents")
+    public ResponseEntity<Object> markUserAsAttendedOnEvent(@RequestParam Long userId, Long eventId) {
+        return eventService.markUserAsAttended(userId, eventId);
+    }
+
+    @PostMapping("/MarkPresentsAlt")
+    @ApiOperation(value = "markAsAttended", notes = "Alternatywna metoda do potwierdzenia obecnosci przez uuid biletu")
+    public ResponseEntity<Object> markUserAsAttendedOnEvent(@RequestParam String ticketUuid) {
+        return eventService.markUserAsAttended(ticketUuid);
     }
 }

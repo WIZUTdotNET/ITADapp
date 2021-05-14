@@ -8,15 +8,14 @@ import pl.dotnet.main.dao.model.Event;
 import pl.dotnet.main.dao.model.NotificationEmail;
 import pl.dotnet.main.dao.model.Ticket;
 import pl.dotnet.main.dao.model.User;
-import pl.dotnet.main.dao.repository.EventPartnerRepository;
 import pl.dotnet.main.dao.repository.EventRepository;
-import pl.dotnet.main.dao.repository.LectureRepository;
 import pl.dotnet.main.dao.repository.TicketRepository;
+import pl.dotnet.main.dao.repository.UserRepository;
 import pl.dotnet.main.dto.Event.*;
-import pl.dotnet.main.dto.Ticket.CreateTicketDTO;
-import pl.dotnet.main.dto.Ticket.RegisterTicketDTO;
+import pl.dotnet.main.dto.Ticket.TicketDTO;
 import pl.dotnet.main.expections.EventFullException;
 import pl.dotnet.main.expections.NotFoundRequestException;
+import pl.dotnet.main.expections.NotPayedException;
 import pl.dotnet.main.mapper.EventMapper;
 import pl.dotnet.main.mapper.TicketMapper;
 
@@ -38,8 +37,7 @@ public class EventService {
     private final EventMapper eventMapper;
     private final TicketRepository ticketRepository;
     private final MailService mailService;
-    private final EventPartnerRepository eventPartnerRepository;
-    private final LectureRepository lectureRepository;
+    private final UserRepository userRepository;
 
     public List<EventDTO> findAll() {
         return eventRepository.findAll().stream()
@@ -57,10 +55,17 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
-    public List<EventDTO> getCurrentUserEvent() {
+    public List<EventDTO> getCurrentUserEvents() {
         User currentUser = userService.getCurrentUser();
         return eventRepository.findByOwner(currentUser).stream()
                 .map(eventMapper::eventToDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<TicketDTO> getRegisteredUsers(Long eventId) {
+        Event event = eventRepository.findById(eventId).orElseThrow();
+        return event.getRegisteredUsers().stream()
+                .map(ticketMapper::ticketToDto)
                 .collect(Collectors.toList());
     }
 
@@ -99,20 +104,13 @@ public class EventService {
 
         userService.isCurrentUserNotTheOwnerOfThisEvent(event);
 
-//        userService.getCurrentUser().removeEventFromOwned(event);
-//        event.getPartners().forEach(eventPartnerRepository::delete);
-//        event.getLectures().forEach(lectureRepository::delete);
-//        event.getRegisteredUsers().forEach(ticket -> ticket.setEvent(null));
-//        event.getAttendedUsers().forEach(ticket -> ticket.setEvent(null));
-//        event.getOwner().removeEventFromOwned(event);
-
         eventRepository.deleteById(id);
         return new ResponseEntity<>("Deletion Successful", OK);
     }
 
-    public ResponseEntity<String> registerToEvent(RegisterTicketDTO ticketDTO) {
+    public ResponseEntity<String> registerToEvent(Long eventId) {
         User currentUser = userService.getCurrentUser();
-        Event event = eventRepository.findById(ticketDTO.getEventId()).orElseThrow(() -> new NotFoundRequestException("Event not found"));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException("Event not found"));
 
         if (event.getAvailableTickets() <= event.getBookedTickets())
             throw new EventFullException("No tickets available");
@@ -122,8 +120,8 @@ public class EventService {
                 .user(currentUser)
                 .price(event.getTicketPrice())
                 .isPayed(false)
-                .name(ticketDTO.getName())
-                .surname(ticketDTO.getSurname())
+                .name(currentUser.getName())
+                .surname(currentUser.getSurname())
                 .uuid(UUID.randomUUID().toString())
                 .build();
 
@@ -138,13 +136,6 @@ public class EventService {
         return new ResponseEntity<>(OK);
     }
 
-    public List<CreateTicketDTO> getRegisteredUsers(Long eventId) {
-        Event event = eventRepository.findById(eventId).orElseThrow();
-        return event.getRegisteredUsers().stream()
-                .map(ticketMapper::ticketToDto)
-                .collect(Collectors.toList());
-    }
-
     public ResponseEntity<String> updateEventTickets(UpdateEventTicketsDTo eventTicketsDTo) {
         Event event = eventRepository.findById(eventTicketsDTo.getEventId()).orElseThrow();
         userService.isCurrentUserNotTheOwnerOfThisEvent(event);
@@ -153,4 +144,36 @@ public class EventService {
         event.setTicketPrice(eventTicketsDTo.getTicketPrice());
         return new ResponseEntity<>(OK);
     }
+
+    public ResponseEntity<Object> markUserAsAttended(Long userId, Long eventId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundRequestException(""));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException(""));
+
+        userService.isCurrentUserNotTheOwnerOfThisEvent(event);
+
+        Ticket ticket = ticketRepository.findByUserAndEvent(user, event).orElseThrow(() -> new NotFoundRequestException(""));
+
+        if (!ticket.getIsPayed())
+            throw new NotPayedException("Ticket is not payed");
+
+        user.attendEvent(ticket);
+        event.markAsAttended(ticket);
+
+        return new ResponseEntity<>(OK);
+    }
+
+    public ResponseEntity<Object> markUserAsAttended(String ticketUuid) {
+        Ticket ticket = ticketRepository.findByUuid(ticketUuid).orElseThrow(() -> new NotFoundRequestException(""));
+        userService.isCurrentUserNotTheOwnerOfThisEvent(ticket.getEvent());
+
+        if (!ticket.getIsPayed())
+            throw new NotPayedException("Ticket is not payed");
+
+        ticket.getUser().attendEvent(ticket);
+        ticket.getEvent().markAsAttended(ticket);
+
+        return new ResponseEntity<>(OK);
+    }
+
+
 }

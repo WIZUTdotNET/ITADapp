@@ -21,4 +21,5 @@ public class TicketService {
         ticketRepository.save(ticket);
         return new ResponseEntity<>("Payment received", HttpStatus.OK);
     }
+
 }

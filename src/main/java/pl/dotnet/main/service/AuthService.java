@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.dotnet.main.auth.JwtProvider;
 import pl.dotnet.main.dao.model.NotificationEmail;
+import pl.dotnet.main.dao.model.ResetPasswordToken;
 import pl.dotnet.main.dao.model.User;
 import pl.dotnet.main.dao.model.VerificationToken;
+import pl.dotnet.main.dao.repository.ResetPasswordTokenRepository;
 import pl.dotnet.main.dao.repository.UserRepository;
 import pl.dotnet.main.dao.repository.VerificationTokenRepository;
 import pl.dotnet.main.dto.Security.AuthenticationResponseDTO;
@@ -23,6 +25,7 @@ import pl.dotnet.main.dto.Security.RefreshTokenRequestDTO;
 import pl.dotnet.main.dto.Security.RegisterRequestDTO;
 import pl.dotnet.main.expections.ConnectException;
 import pl.dotnet.main.expections.NotFoundRequestException;
+import pl.dotnet.main.expections.UnauthorizedRequestException;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -44,6 +47,7 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
     private final UserService userService;
+    private final ResetPasswordTokenRepository resetPasswordTokenRepository;
 
     public ResponseEntity<String> signup(RegisterRequestDTO registerRequestDTO) {
         User user = User.builder()
@@ -133,5 +137,30 @@ public class AuthService {
 
     public void logout(RefreshTokenRequestDTO refreshTokenRequestDTO) {
         refreshTokenService.deleteRefreshToken(refreshTokenRequestDTO.getRefreshToken());
+    }
+
+    public ResponseEntity<Object> sendChangePasswordEmail() {
+        User currentUser = userService.getCurrentUser();
+        ResetPasswordToken token = ResetPasswordToken.builder()
+                .user(currentUser)
+                .uuid(UUID.randomUUID().toString())
+                .expiryDate(Instant.now().plusSeconds(60 * 60 * 24))
+                .build();
+
+        resetPasswordTokenRepository.save(token);
+        mailService.sendMail(new NotificationEmail("Zmiana Hasła",
+                currentUser.getEmail(), "Aby zmienic hasło kliknij w poniższy link:" +
+                "Backend: http://localhost:8080/api/auth/resetPassword/" + token.getUuid()));
+        return new ResponseEntity<>(OK);
+    }
+
+    public void resetPassword(String uuid, String password) {
+        ResetPasswordToken token = resetPasswordTokenRepository.findByUuid(uuid).orElseThrow(() -> new NotFoundRequestException(""));
+
+        if (token.getExpiryDate().isAfter(Instant.now()))
+            throw new UnauthorizedRequestException("Ticket Expired");
+
+        User user = token.getUser();
+        user.setPassword(passwordEncoder.encode(password));
     }
 }
