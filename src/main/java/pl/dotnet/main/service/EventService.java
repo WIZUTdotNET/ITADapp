@@ -21,6 +21,7 @@ import pl.dotnet.main.mapper.TicketMapper;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -182,4 +183,12 @@ public class EventService {
     }
 
 
+    public boolean isCurrentUserRegistered(Long eventId) {
+        User user = userService.getCurrentUser();
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException("Event not found"));
+        Set<Ticket> tickets = event.getRegisteredUsers().stream()
+                .filter(ticket -> ticket.getUser().equals(user))
+                .collect(Collectors.toSet());
+        return !tickets.isEmpty();
+    }
 }
