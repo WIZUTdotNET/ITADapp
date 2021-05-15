@@ -76,4 +76,9 @@ public class EventController {
     public ResponseEntity<Object> markUserAsAttendedOnEvent(@RequestParam String ticketUuid) {
         return eventService.markUserAsAttended(ticketUuid);
     }
+
+    @GetMapping("/isCurrentUserRegistered")
+    public boolean isCurrentUserRegistered(@RequestParam Long eventID){
+        return eventService.isCurrentUserRegistered(eventID);
+    }
 }
