@@ -158,8 +158,8 @@ public class EventService {
         return new ResponseEntity<>(OK);
     }
 
-    public ResponseEntity<Object> markUserAsAttended(Long userId, Long eventId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundRequestException(""));
+    public ResponseEntity<Object> markUserAsAttended(String userUUID, Long eventId) {
+        User user = userRepository.findByUserUUID(userUUID).orElseThrow(() -> new NotFoundRequestException(""));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException(""));
 
         userService.isCurrentUserNotTheOwnerOfThisEvent(event);

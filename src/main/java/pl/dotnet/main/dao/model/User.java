@@ -22,6 +22,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
+    private String userUUID;
+
     @NotEmpty(message = "User username cannot be empty or NULL")
     private String username;
 

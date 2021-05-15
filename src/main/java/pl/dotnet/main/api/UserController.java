@@ -44,4 +44,9 @@ public class UserController {
     public ResponseEntity<UserDTO> editUser(UpdateUserDTO userDTO) {
         return userService.updateUser(userDTO);
     }
+
+    @GetMapping("/getUUID")
+    public ResponseEntity<String> getUserUUID() {
+        return userService.getCurrentUserUUID();
+    }
 }

@@ -103,4 +103,9 @@ public class UserService {
 
         return new ResponseEntity<>(userMapper.userToDto(currentUser), HttpStatus.OK);
     }
+
+    public ResponseEntity<String> getCurrentUserUUID() {
+        User currentUser = getCurrentUser();
+        return new ResponseEntity<>(currentUser.getUserUUID(), HttpStatus.OK);
+    }
 }
