@@ -156,6 +156,9 @@ public class EventService {
         if (!ticket.getIsPayed())
             throw new NotPayedException("Ticket is not payed");
 
+        if (event.getAttendedUsers().contains(ticket))
+            return new ResponseEntity<>("User attended", OK);
+
         user.attendEvent(ticket);
         event.markAsAttended(ticket);
 
@@ -168,6 +171,9 @@ public class EventService {
 
         if (!ticket.getIsPayed())
             throw new NotPayedException("Ticket is not payed");
+
+        if (ticket.getEvent().getAttendedUsers().contains(ticket))
+            return new ResponseEntity<>("User attended", OK);
 
         ticket.getUser().attendEvent(ticket);
         ticket.getEvent().markAsAttended(ticket);

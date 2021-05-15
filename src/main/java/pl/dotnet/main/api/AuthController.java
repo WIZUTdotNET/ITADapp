@@ -52,7 +52,7 @@ public class AuthController {
     }
 
     @GetMapping("/resetPassword/{token}")
-    public void changePassword(@PathVariable String token, @RequestBody String password) {
-        authService.resetPassword(token, password);
+    public ResponseEntity<Object> changePassword(@PathVariable String token, @RequestBody String password) {
+        return authService.resetPassword(token, password);
     }
 }

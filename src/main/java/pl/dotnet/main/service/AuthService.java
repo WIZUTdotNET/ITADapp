@@ -154,13 +154,15 @@ public class AuthService {
         return new ResponseEntity<>(OK);
     }
 
-    public void resetPassword(String uuid, String password) {
+    public ResponseEntity<Object> resetPassword(String uuid, String password) {
         ResetPasswordToken token = resetPasswordTokenRepository.findByUuid(uuid).orElseThrow(() -> new NotFoundRequestException(""));
 
-        if (token.getExpiryDate().isAfter(Instant.now()))
+        if (token.getExpiryDate().isBefore(Instant.now()))
             throw new UnauthorizedRequestException("Ticket Expired");
 
         User user = token.getUser();
         user.setPassword(passwordEncoder.encode(password));
+        resetPasswordTokenRepository.delete(token);
+        return new ResponseEntity<>(OK);
     }
 }
