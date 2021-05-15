@@ -51,6 +51,7 @@ public class AuthService {
 
     public ResponseEntity<String> signup(RegisterRequestDTO registerRequestDTO) {
         User user = User.builder()
+                .userUUID(UUID.randomUUID().toString())
                 .username(registerRequestDTO.getUsername())
                 .email(registerRequestDTO.getEmail())
                 .password(passwordEncoder.encode(registerRequestDTO.getPassword()))

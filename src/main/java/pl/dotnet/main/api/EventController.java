@@ -67,8 +67,8 @@ public class EventController {
     }
 
     @PostMapping("/MarkPresents")
-    public ResponseEntity<Object> markUserAsAttendedOnEvent(@RequestParam Long userId, Long eventId) {
-        return eventService.markUserAsAttended(userId, eventId);
+    public ResponseEntity<Object> markUserAsAttendedOnEvent(@RequestParam String userUUID, Long eventId) {
+        return eventService.markUserAsAttended(userUUID, eventId);
     }
 
     @PostMapping("/MarkPresentsAlt")
