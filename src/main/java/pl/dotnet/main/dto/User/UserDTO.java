@@ -24,4 +24,7 @@ public class UserDTO {
 
     @NotNull
     private String surname;
+
+    @NotNull
+    private String userUUID;
 }
