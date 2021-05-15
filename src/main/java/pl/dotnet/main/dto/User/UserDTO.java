@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -26,5 +27,5 @@ public class UserDTO {
     private String surname;
 
     @NotNull
-    private String userUUID;
+    private UUID userUUID;
 }

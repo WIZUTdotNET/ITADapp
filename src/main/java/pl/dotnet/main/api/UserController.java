@@ -13,6 +13,7 @@ import pl.dotnet.main.dto.User.UserDTO;
 import pl.dotnet.main.service.UserService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user")
@@ -46,7 +47,7 @@ public class UserController {
     }
 
     @GetMapping("/getUUID")
-    public ResponseEntity<String> getUserUUID() {
+    public ResponseEntity<UUID> getUserUUID() {
         return userService.getCurrentUserUUID();
     }
 }

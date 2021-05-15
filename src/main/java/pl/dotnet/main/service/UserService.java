@@ -22,6 +22,7 @@ import pl.dotnet.main.mapper.UserMapper;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -104,7 +105,7 @@ public class UserService {
         return new ResponseEntity<>(userMapper.userToDto(currentUser), HttpStatus.OK);
     }
 
-    public ResponseEntity<String> getCurrentUserUUID() {
+    public ResponseEntity<UUID> getCurrentUserUUID() {
         User currentUser = getCurrentUser();
         return new ResponseEntity<>(currentUser.getUserUUID(), HttpStatus.OK);
     }

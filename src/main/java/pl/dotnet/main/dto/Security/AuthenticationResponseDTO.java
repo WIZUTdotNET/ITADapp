@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -27,5 +28,7 @@ public class AuthenticationResponseDTO {
 
     @NotNull
     private Long userId;
+
+    private UUID uuid;
 }
 

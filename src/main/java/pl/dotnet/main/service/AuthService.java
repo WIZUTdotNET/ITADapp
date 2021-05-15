@@ -51,7 +51,7 @@ public class AuthService {
 
     public ResponseEntity<String> signup(RegisterRequestDTO registerRequestDTO) {
         User user = User.builder()
-                .userUUID(UUID.randomUUID().toString())
+                .userUUID(UUID.randomUUID())
                 .username(registerRequestDTO.getUsername())
                 .email(registerRequestDTO.getEmail())
                 .password(passwordEncoder.encode(registerRequestDTO.getPassword()))
@@ -117,6 +117,7 @@ public class AuthService {
                 .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()).toString())
                 .username(user.getUsername())
                 .userId(user.getUserId())
+                .uuid(user.getUserUUID())
                 .build();
     }
 
