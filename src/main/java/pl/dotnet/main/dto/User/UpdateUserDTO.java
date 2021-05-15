@@ -21,4 +21,7 @@ public class UpdateUserDTO {
 
     @NotNull
     private String surname;
+
+    @NotNull
+    private String password;
 }
