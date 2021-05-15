@@ -2,10 +2,7 @@ package pl.dotnet.main.api;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.dotnet.main.dto.Event.EventDTO;
 import pl.dotnet.main.dto.Ticket.TicketDTO;
 import pl.dotnet.main.dto.User.UpdateUserDTO;
@@ -13,6 +10,7 @@ import pl.dotnet.main.dto.User.UserDTO;
 import pl.dotnet.main.service.UserService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user")
@@ -41,12 +39,12 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<UserDTO> editUser(UpdateUserDTO userDTO) {
+    public ResponseEntity<UserDTO> editUser(@RequestBody UpdateUserDTO userDTO) {
         return userService.updateUser(userDTO);
     }
 
     @GetMapping("/getUUID")
-    public ResponseEntity<String> getUserUUID() {
+    public ResponseEntity<UUID> getUserUUID() {
         return userService.getCurrentUserUUID();
     }
 }
