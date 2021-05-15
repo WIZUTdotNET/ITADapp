@@ -44,4 +44,6 @@ public class DetailedEventDTO {
 
     @NotNull
     private List<LectureDTO> lectures;
+
+    private boolean isCurrentUserRegistered;
 }
