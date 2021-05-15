@@ -49,16 +49,16 @@ public class EventService {
     public DetailedEventDTO findById(Long id) {
         Event event = eventRepository.findById(id).orElseThrow(() -> new NotFoundRequestException("Event not found"));
         DetailedEventDTO eventDTO = eventMapper.eventToDetailedDto(event);
-        try {
-            User user = userService.getCurrentUser();
-            Set<Ticket> ticket = event.getRegisteredUsers().stream()
-                    .filter(l -> l.getUser().equals(user))
-                    .collect(Collectors.toSet());
-
-            eventDTO.setCurrentUserRegistered(!ticket.isEmpty());
-        }catch (NotFoundRequestException e){
-            eventDTO.setCurrentUserRegistered(false);
-        }
+//        try {
+//            User user = userService.getCurrentUser();
+//            Set<Ticket> ticket = event.getRegisteredUsers().stream()
+//                    .filter(l -> l.getUser().equals(user))
+//                    .collect(Collectors.toSet());
+//
+//            eventDTO.setCurrentUserRegistered(!ticket.isEmpty());
+//        }catch (NotFoundRequestException e){
+//            eventDTO.setCurrentUserRegistered(false);
+//        }
         return eventDTO;
     }
 
