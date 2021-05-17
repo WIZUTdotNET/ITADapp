@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.dotnet.main.dao.model.Event;
@@ -33,6 +34,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final EventMapper eventMapper;
     private final TicketMapper ticketMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public String getCurrentUserName() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -98,15 +100,32 @@ public class UserService {
 
     public ResponseEntity<UserDTO> updateUser(UpdateUserDTO userDTO) {
         User currentUser = getCurrentUser();
+        userDTO = validUpdatedUser(userDTO, currentUser);
         currentUser.setEmail(userDTO.getEmail());
         currentUser.setName(userDTO.getName());
         currentUser.setSurname(userDTO.getSurname());
-
+        currentUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         return new ResponseEntity<>(userMapper.userToDto(currentUser), HttpStatus.OK);
     }
 
     public ResponseEntity<UUID> getCurrentUserUUID() {
         User currentUser = getCurrentUser();
         return new ResponseEntity<>(currentUser.getUserUUID(), HttpStatus.OK);
+    }
+
+    public UpdateUserDTO validUpdatedUser(UpdateUserDTO userDTO, User currentUser) {
+        if (userDTO.getEmail().isEmpty()) {
+            userDTO.setEmail(currentUser.getEmail());
+        }
+        if (userDTO.getSurname().isEmpty()) {
+            userDTO.setName(currentUser.getSurname());
+        }
+        if (userDTO.getName().isEmpty()) {
+            userDTO.setSurname(currentUser.getName());
+        }
+        if (userDTO.getPassword().isEmpty()) {
+            userDTO.setPassword(currentUser.getPassword());
+        }
+        return userDTO;
     }
 }
