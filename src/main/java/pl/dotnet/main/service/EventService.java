@@ -128,6 +128,9 @@ public class EventService {
         if (event.getAvailableTickets() <= event.getBookedTickets())
             throw new EventFullException("No tickets available");
 
+        if(event.getRegisteredUsers().stream().anyMatch(ticket -> ticket.getUser().equals(currentUser)))
+            throw new EventFullException("User already registered");
+
         Ticket ticket = Ticket.builder()
                 .event(event)
                 .user(currentUser)
