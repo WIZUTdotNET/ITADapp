@@ -30,12 +30,6 @@ public class Lecture {
 
     private Instant startDate;
 
-    @NotNull
-    private Long availableSeats;
-
-    @NotNull
-    private Long takenSeats;
-
     @ManyToOne
     private Event event;
 
@@ -43,10 +37,7 @@ public class Lecture {
     private List<Speaker> speakers;
 
     @ManyToMany
-    private List<User> registeredUsers;
-
-    @ManyToMany
-    private List<User> attendedUsers;
+    private List<Ticket> attendedUsers;
 
     public void addSpeakerToLecture(Speaker speaker) {
         speakers.add(speaker);
@@ -56,11 +47,7 @@ public class Lecture {
         speakers.remove(speaker);
     }
 
-    public void registerUser(User user) {
-        registeredUsers.add(user);
-    }
-
-    public void markUserAsAttended(User user) {
-        attendedUsers.add(user);
+    public void markTicketAsAttended(Ticket ticket) {
+        attendedUsers.add(ticket);
     }
 }

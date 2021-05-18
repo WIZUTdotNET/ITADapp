@@ -161,7 +161,8 @@ public class EventService {
         return new ResponseEntity<>(OK);
     }
 
-    public ResponseEntity<Object> markUserAsAttended(String userUUID, Long eventId) {
+    public ResponseEntity<Object> markUserAsAttended(UUID userUUID, Long eventId) {
+        System.out.println(userUUID);
         User user = userRepository.findByUserUUID(userUUID).orElseThrow(() -> new NotFoundRequestException("User not found"));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException("Event not found"));
 

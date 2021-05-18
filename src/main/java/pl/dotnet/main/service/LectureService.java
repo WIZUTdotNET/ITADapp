@@ -4,19 +4,17 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.dotnet.main.dao.model.Event;
-import pl.dotnet.main.dao.model.Lecture;
-import pl.dotnet.main.dao.model.Speaker;
-import pl.dotnet.main.dao.repository.EventRepository;
-import pl.dotnet.main.dao.repository.LectureRepository;
-import pl.dotnet.main.dao.repository.SpeakerRepository;
+import pl.dotnet.main.dao.model.*;
+import pl.dotnet.main.dao.repository.*;
 import pl.dotnet.main.dto.Lecture.CreateLectureDTO;
 import pl.dotnet.main.dto.Lecture.LectureDTO;
 import pl.dotnet.main.dto.Lecture.UpdateLectureDTO;
 import pl.dotnet.main.expections.NotFoundRequestException;
+import pl.dotnet.main.expections.NotPayedException;
 import pl.dotnet.main.mapper.LectureMapper;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -32,6 +30,8 @@ public class LectureService {
     private final UserService userService;
     private final EventRepository eventRepository;
     private final SpeakerRepository speakerRepository;
+    private final UserRepository userRepository;
+    private final TicketRepository ticketRepository;
 
     public LectureDTO findLectureById(Long lectureId) {
         Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(() -> new NotFoundRequestException("Lecture not found"));
@@ -108,6 +108,26 @@ public class LectureService {
 
         lecture.removeSpeakerFromLecture(speaker);
         speaker.removeLecture(lecture);
+        return new ResponseEntity<>(OK);
+    }
+
+    public ResponseEntity<Object> markUserAsAttended(UUID userUUID, Long lectureId) {
+
+        User user = userRepository.findByUserUUID(userUUID).orElseThrow(() -> new NotFoundRequestException("User not found"));
+        Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(() -> new NotFoundRequestException("Lecture not found"));
+        Event event = lecture.getEvent();
+
+        userService.isCurrentUserNotTheOwnerOfThisEvent(event);
+
+        Ticket ticket = ticketRepository.findByUserAndEvent(user, event).orElseThrow(() -> new NotFoundRequestException("Ticket not found"));
+
+        if (!ticket.getIsPayed())
+            throw new NotPayedException("Ticket is not payed");
+
+        if (lecture.getAttendedUsers().contains(ticket))
+            return new ResponseEntity<>("User attended", OK);
+
+        lecture.markTicketAsAttended(ticket);
         return new ResponseEntity<>(OK);
     }
 }

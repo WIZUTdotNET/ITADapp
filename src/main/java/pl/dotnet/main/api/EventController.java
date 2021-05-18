@@ -9,6 +9,7 @@ import pl.dotnet.main.dto.Ticket.TicketDTO;
 import pl.dotnet.main.service.EventService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/event")
@@ -67,7 +68,7 @@ public class EventController {
     }
 
     @PostMapping("/MarkPresents")
-    public ResponseEntity<Object> markUserAsAttendedOnEvent(@RequestParam String userUUID, Long eventId) {
+    public ResponseEntity<Object> markUserAsAttendedOnEvent(@RequestParam UUID userUUID, Long eventId) {
         return eventService.markUserAsAttended(userUUID, eventId);
     }
 
