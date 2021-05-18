@@ -34,12 +34,12 @@ public interface EventMapper {
                 .name(event.getOwner().getName())
                 .userId(event.getOwner().getUserId())
                 .email(event.getOwner().getEmail())
+                .userUUID(event.getOwner().getUserUUID())
                 .build();
     }
 
     @Named("getPartners")
     default List<EventPartnerDTO> getPartners(Event event) {
-
         return event.getPartners().stream()
                 .map(eventPartner -> EventPartnerDTO.builder()
                         .eventPartnerId(eventPartner.getPartnerId())
@@ -58,8 +58,6 @@ public interface EventMapper {
                         .name(lecture.getName())
                         .description(lecture.getDescription())
                         .startDate(lecture.getStartDate().toString())
-                        .availableSeats(lecture.getAvailableSeats())
-                        .takenSeats(lecture.getTakenSeats())
                         .eventId(event.getEventId())
                         .speakers(lecture.getSpeakers().stream()
                                 .map(speaker -> SpeakerDTO.builder()

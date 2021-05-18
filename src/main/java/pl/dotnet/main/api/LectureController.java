@@ -9,6 +9,7 @@ import pl.dotnet.main.dto.Lecture.UpdateLectureDTO;
 import pl.dotnet.main.service.LectureService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/lecture")
@@ -51,4 +52,8 @@ public class LectureController {
         return lectureService.findLectureById(lectureId);
     }
 
+    @PostMapping("/MarkPresents")
+    public ResponseEntity<Object> markUserAsAttendedOnEvent(@RequestParam UUID userUUID, Long lectureId) {
+        return lectureService.markUserAsAttended(userUUID, lectureId);
+    }
 }

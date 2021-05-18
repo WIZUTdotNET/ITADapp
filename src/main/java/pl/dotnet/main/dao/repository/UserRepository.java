@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import pl.dotnet.main.dao.model.User;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -11,5 +12,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String username);
 
-    Optional<User> findByUserUUID(String uuid);
+    Optional<User> findByUserUUID(UUID uuid);
 }

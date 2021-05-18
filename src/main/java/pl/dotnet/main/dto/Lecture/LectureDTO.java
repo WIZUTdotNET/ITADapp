@@ -28,12 +28,6 @@ public class LectureDTO {
     private String startDate;
 
     @NotNull
-    private Long availableSeats;
-
-    @NotNull
-    private Long takenSeats;
-
-    @NotNull
     private Long eventId;
 
     @NotNull
