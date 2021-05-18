@@ -159,12 +159,12 @@ public class EventService {
     }
 
     public ResponseEntity<Object> markUserAsAttended(String userUUID, Long eventId) {
-        User user = userRepository.findByUserUUID(userUUID).orElseThrow(() -> new NotFoundRequestException(""));
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException(""));
+        User user = userRepository.findByUserUUID(userUUID).orElseThrow(() -> new NotFoundRequestException("User not found"));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException("Event not found"));
 
         userService.isCurrentUserNotTheOwnerOfThisEvent(event);
 
-        Ticket ticket = ticketRepository.findByUserAndEvent(user, event).orElseThrow(() -> new NotFoundRequestException(""));
+        Ticket ticket = ticketRepository.findByUserAndEvent(user, event).orElseThrow(() -> new NotFoundRequestException("Ticket not found"));
 
         if (!ticket.getIsPayed())
             throw new NotPayedException("Ticket is not payed");
@@ -179,7 +179,7 @@ public class EventService {
     }
 
     public ResponseEntity<Object> markUserAsAttended(String ticketUuid) {
-        Ticket ticket = ticketRepository.findByUuid(ticketUuid).orElseThrow(() -> new NotFoundRequestException(""));
+        Ticket ticket = ticketRepository.findByUuid(ticketUuid).orElseThrow(() -> new NotFoundRequestException("Ticket not found"));
         userService.isCurrentUserNotTheOwnerOfThisEvent(ticket.getEvent());
 
         if (!ticket.getIsPayed())
