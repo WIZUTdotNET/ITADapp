@@ -34,6 +34,7 @@ public interface EventMapper {
                 .name(event.getOwner().getName())
                 .userId(event.getOwner().getUserId())
                 .email(event.getOwner().getEmail())
+                .userUUID(event.getOwner().getUserUUID())
                 .build();
     }
 
