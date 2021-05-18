@@ -141,7 +141,7 @@ public class EventService {
                 .uuid(UUID.randomUUID().toString())
                 .build();
 
-        event.registerUser(ticket);
+        event.registerTicket(ticket);
         currentUser.registerOnEvent(ticket);
 
         ticketRepository.save(ticket);
@@ -176,7 +176,7 @@ public class EventService {
             return new ResponseEntity<>("User attended", OK);
 
         user.attendEvent(ticket);
-        event.markAsAttended(ticket);
+        event.markTicketAsAttended(ticket);
 
         return new ResponseEntity<>(OK);
     }
@@ -192,7 +192,7 @@ public class EventService {
             return new ResponseEntity<>("User attended", OK);
 
         ticket.getUser().attendEvent(ticket);
-        ticket.getEvent().markAsAttended(ticket);
+        ticket.getEvent().markTicketAsAttended(ticket);
 
         return new ResponseEntity<>(OK);
     }

@@ -80,12 +80,12 @@ public class Event {
         lectures.remove(lecture);
     }
 
-    public void registerUser(Ticket user) {
-        registeredUsers.add(user);
+    public void registerTicket(Ticket ticket) {
+        registeredUsers.add(ticket);
         bookedTickets++;
     }
 
-    public void markAsAttended(Ticket user) {
-        attendedUsers.add(user);
+    public void markTicketAsAttended(Ticket ticket) {
+        attendedUsers.add(ticket);
     }
 }
