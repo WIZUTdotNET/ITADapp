@@ -128,6 +128,9 @@ public class EventService {
         if (event.getAvailableTickets() <= event.getBookedTickets())
             throw new EventFullException("No tickets available");
 
+        if(event.getRegisteredUsers().stream().anyMatch(ticket -> ticket.getUser().equals(currentUser)))
+            throw new EventFullException("User already registered");
+
         Ticket ticket = Ticket.builder()
                 .event(event)
                 .user(currentUser)
@@ -138,7 +141,7 @@ public class EventService {
                 .uuid(UUID.randomUUID().toString())
                 .build();
 
-        event.registerUser(ticket);
+        event.registerTicket(ticket);
         currentUser.registerOnEvent(ticket);
 
         ticketRepository.save(ticket);
@@ -159,12 +162,12 @@ public class EventService {
     }
 
     public ResponseEntity<Object> markUserAsAttended(String userUUID, Long eventId) {
-        User user = userRepository.findByUserUUID(userUUID).orElseThrow(() -> new NotFoundRequestException(""));
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException(""));
+        User user = userRepository.findByUserUUID(userUUID).orElseThrow(() -> new NotFoundRequestException("User not found"));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException("Event not found"));
 
         userService.isCurrentUserNotTheOwnerOfThisEvent(event);
 
-        Ticket ticket = ticketRepository.findByUserAndEvent(user, event).orElseThrow(() -> new NotFoundRequestException(""));
+        Ticket ticket = ticketRepository.findByUserAndEvent(user, event).orElseThrow(() -> new NotFoundRequestException("Ticket not found"));
 
         if (!ticket.getIsPayed())
             throw new NotPayedException("Ticket is not payed");
@@ -173,13 +176,13 @@ public class EventService {
             return new ResponseEntity<>("User attended", OK);
 
         user.attendEvent(ticket);
-        event.markAsAttended(ticket);
+        event.markTicketAsAttended(ticket);
 
         return new ResponseEntity<>(OK);
     }
 
     public ResponseEntity<Object> markUserAsAttended(String ticketUuid) {
-        Ticket ticket = ticketRepository.findByUuid(ticketUuid).orElseThrow(() -> new NotFoundRequestException(""));
+        Ticket ticket = ticketRepository.findByUuid(ticketUuid).orElseThrow(() -> new NotFoundRequestException("Ticket not found"));
         userService.isCurrentUserNotTheOwnerOfThisEvent(ticket.getEvent());
 
         if (!ticket.getIsPayed())
@@ -189,7 +192,7 @@ public class EventService {
             return new ResponseEntity<>("User attended", OK);
 
         ticket.getUser().attendEvent(ticket);
-        ticket.getEvent().markAsAttended(ticket);
+        ticket.getEvent().markTicketAsAttended(ticket);
 
         return new ResponseEntity<>(OK);
     }

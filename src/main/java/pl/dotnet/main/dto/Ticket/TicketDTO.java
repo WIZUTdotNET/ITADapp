@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,6 +28,9 @@ public class TicketDTO {
 
     @NotNull
     private String eventId;
+
+    @NotNull
+    private String eventName;
 
     @NotNull
     private String userId;
