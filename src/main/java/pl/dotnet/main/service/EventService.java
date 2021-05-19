@@ -1,6 +1,7 @@
 package pl.dotnet.main.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,7 @@ import static org.springframework.http.HttpStatus.OK;
 @Service
 @AllArgsConstructor
 @Transactional
+@Slf4j
 public class EventService {
 
     private final EventRepository eventRepository;
@@ -46,9 +48,12 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
-    public DetailedEventDTO findById(Long id) {
-        Event event = eventRepository.findById(id).orElseThrow(() -> new NotFoundRequestException("Event not found"));
-        return eventMapper.eventToDetailedDto(event);
+    public DetailedEventDTO findById(Long eventId) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException("Event not found"));
+        DetailedEventDTO detailedEventDTO = eventMapper.eventToDetailedDto(event);
+        detailedEventDTO.setCurrentUserRegistered(isCurrentUserRegistered(eventId));
+
+        return detailedEventDTO;
     }
 
     public List<EventDTO> findByName(String name) {
@@ -117,7 +122,7 @@ public class EventService {
         if (event.getAvailableTickets() <= event.getBookedTickets())
             throw new EventFullException("No tickets available");
 
-        if(event.getRegisteredUsers().stream().anyMatch(ticket -> ticket.getUser().equals(currentUser)))
+        if (event.getRegisteredUsers().stream().anyMatch(ticket -> ticket.getUser().equals(currentUser)))
             throw new EventFullException("User already registered");
 
         Ticket ticket = Ticket.builder()
@@ -189,7 +194,7 @@ public class EventService {
 
 
     public boolean isCurrentUserRegistered(Long eventId) {
-        User user = userService.getCurrentUser();
+        User user = userService.getCurrentUserOrNull();
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException("Event not found"));
         Set<Ticket> tickets = event.getRegisteredUsers().stream()
                 .filter(ticket -> ticket.getUser().equals(user))

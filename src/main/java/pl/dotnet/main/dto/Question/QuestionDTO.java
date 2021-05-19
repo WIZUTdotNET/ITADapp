@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class QuestionDTO {
     private Long userId;
+    private String name;
+    private String surname;
     private Long lectureId;
     private String question;
 }

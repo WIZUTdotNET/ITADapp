@@ -36,7 +36,9 @@ public class LectureService {
 
     public LectureDTO findLectureById(Long lectureId) {
         Lecture lecture = lectureRepository.findById(lectureId).orElseThrow(() -> new NotFoundRequestException("Lecture not found"));
-        return lectureMapper.lectureToDTO(lecture);
+        LectureDTO lectureDTO = lectureMapper.lectureToDTO(lecture);
+        lectureDTO.setQuestions(questionService.getQuestionsDTOFromLecture(lectureDTO.getLectureId()));
+        return lectureDTO;
     }
 
     public List<LectureDTO> findLecturesByEventId(Long eventId) {
@@ -46,7 +48,6 @@ public class LectureService {
                 .map(lectureMapper::lectureToDTO)
                 .collect(Collectors.toList());
         lectureDTOList.forEach(lectureDTO -> lectureDTO.setQuestions(questionService.getQuestionsDTOFromLecture(lectureDTO.getLectureId())));
-        System.out.println(lectureDTOList);
         return lectureDTOList;
     }
 
