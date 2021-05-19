@@ -53,7 +53,7 @@ public class LectureController {
     }
 
     @PostMapping("/MarkPresents")
-    public ResponseEntity<Object> markUserAsAttendedOnEvent(@RequestParam UUID userUUID, Long lectureId) {
+    public ResponseEntity<Object> markUserAsAttendedOnLecture(@RequestParam UUID userUUID, Long lectureId) {
         return lectureService.markUserAsAttended(userUUID, lectureId);
     }
 }
