@@ -45,9 +45,7 @@ public class LectureService {
         List<LectureDTO> lectureDTOList = lectureRepository.findAllByEvent(event).stream()
                 .map(lectureMapper::lectureToDTO)
                 .collect(Collectors.toList());
-
         lectureDTOList.forEach(lectureDTO -> lectureDTO.setQuestions(questionService.getQuestionsDTOFromLecture(lectureDTO.getLectureId())));
-
         System.out.println(lectureDTOList);
         return lectureDTOList;
     }
