@@ -54,6 +54,11 @@ public class UserService {
         return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundRequestException("Co ty tu robisz?"));
     }
 
+    public User getCurrentUserOrNull() {
+        String username = getCurrentUserName();
+        return userRepository.findByUsername(username).orElse(null);
+    }
+
     public boolean validateUser(User user) {
         Optional<User> userFromDBUsername = userRepository.findByUsername(user.getUsername());
         Optional<User> userFromDBEmail = userRepository.findByEmail(user.getEmail());
@@ -108,7 +113,7 @@ public class UserService {
         currentUser.setName(userDTO.getName());
         currentUser.setSurname(userDTO.getSurname());
 
-        if(!passwordEncoder.matches(userDTO.getPassword(), currentUser.getPassword())){
+        if (!passwordEncoder.matches(userDTO.getPassword(), currentUser.getPassword())) {
             throw new UnauthorizedRequestException("Password is not valid");
         }
 
