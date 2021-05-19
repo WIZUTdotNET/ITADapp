@@ -31,9 +31,10 @@ public class QuestionService {
         User currentUser = userService.getCurrentUser();
         Lecture lecture = lectureRepository.findById(questionDTO.getLectureId()).orElseThrow();
 
-        if (lecture.getAttendedUsers().stream().noneMatch(ticket -> ticket.getUser().equals(currentUser))) {
-            throw new UnauthorizedRequestException("User is not present at this event");
-        }
+        if (!lecture.getEvent().getOwner().equals(currentUser))
+            if (lecture.getAttendedUsers().stream().noneMatch(ticket -> ticket.getUser().equals(currentUser))) {
+                throw new UnauthorizedRequestException("User is not present at this event");
+            }
 
         Question question = Question.builder()
                 .user(currentUser)
