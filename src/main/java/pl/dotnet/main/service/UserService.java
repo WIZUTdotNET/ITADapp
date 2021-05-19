@@ -1,6 +1,7 @@
 package pl.dotnet.main.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 @Transactional
+@Slf4j
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -73,7 +75,6 @@ public class UserService {
                 .map(eventMapper::eventToDto)
                 .collect(Collectors.toList()),
                 HttpStatus.OK);
-
     }
 
     public ResponseEntity<List<EventDTO>> getAllRegisteredEvents() {
@@ -100,11 +101,18 @@ public class UserService {
 
     public ResponseEntity<UserDTO> updateUser(UpdateUserDTO userDTO) {
         User currentUser = getCurrentUser();
+
         userDTO = validUpdatedUser(userDTO, currentUser);
+
         currentUser.setEmail(userDTO.getEmail());
         currentUser.setName(userDTO.getName());
         currentUser.setSurname(userDTO.getSurname());
-        currentUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+
+        if(!passwordEncoder.matches(userDTO.getPassword(), currentUser.getPassword())){
+            throw new UnauthorizedRequestException("Password is not valid");
+        }
+
+        log.info("Activation email sent!!");
         return new ResponseEntity<>(userMapper.userToDto(currentUser), HttpStatus.OK);
     }
 
