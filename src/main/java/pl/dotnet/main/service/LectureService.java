@@ -31,6 +31,7 @@ public class LectureService {
     private final EventRepository eventRepository;
     private final SpeakerRepository speakerRepository;
     private final UserRepository userRepository;
+    private final QuestionService questionService;
     private final TicketRepository ticketRepository;
 
     public LectureDTO findLectureById(Long lectureId) {
@@ -40,10 +41,17 @@ public class LectureService {
 
     public List<LectureDTO> findLecturesByEventId(Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException("Event not found"));
-        return lectureRepository.findAllByEvent(event).stream()
+
+        List<LectureDTO> lectureDTOList = lectureRepository.findAllByEvent(event).stream()
                 .map(lectureMapper::lectureToDTO)
                 .collect(Collectors.toList());
+
+        lectureDTOList.forEach(lectureDTO -> lectureDTO.setQuestions(questionService.getQuestionsDTOFromLecture(lectureDTO.getLectureId())));
+
+        System.out.println(lectureDTOList);
+        return lectureDTOList;
     }
+
 
     public ResponseEntity<LectureDTO> addLecture(CreateLectureDTO lectureDTO) {
         Event event = eventRepository.findById(lectureDTO.getEventId()).orElseThrow(() -> new NotFoundRequestException("Event not found"));
