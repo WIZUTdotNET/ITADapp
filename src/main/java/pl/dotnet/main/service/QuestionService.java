@@ -53,4 +53,13 @@ public class QuestionService {
                 .map(questionMapper::questionToDTO)
                 .collect(Collectors.toList()), OK);
     }
+
+    public List<QuestionDTO> getQuestionsDTOFromLecture(Long lectureId) {
+        Lecture lecture = lectureRepository.findById(lectureId).orElseThrow();
+        List<Question> questions = questionRepository.findAllByLecture(lecture);
+
+        return questions.stream()
+                .map(questionMapper::questionToDTO)
+                .collect(Collectors.toList());
+    }
 }
