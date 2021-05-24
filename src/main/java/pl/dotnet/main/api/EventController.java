@@ -79,7 +79,12 @@ public class EventController {
     }
 
     @GetMapping("/isCurrentUserRegistered")
-    public boolean isCurrentUserRegistered(@RequestParam Long eventID){
-        return eventService.isCurrentUserRegistered(eventID);
+    public boolean isCurrentUserRegistered(@RequestParam Long eventId) {
+        return eventService.isCurrentUserRegistered(eventId);
+    }
+
+    @GetMapping("/getPresence")
+    public boolean getPresence(@RequestParam Long eventId) {
+        return eventService.getPresence(eventId);
     }
 }

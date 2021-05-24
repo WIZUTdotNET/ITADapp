@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.dotnet.main.dao.model.Event;
-import pl.dotnet.main.dao.model.NotificationEmail;
-import pl.dotnet.main.dao.model.Ticket;
-import pl.dotnet.main.dao.model.User;
+import pl.dotnet.main.dao.model.*;
 import pl.dotnet.main.dao.repository.EventRepository;
 import pl.dotnet.main.dao.repository.TicketRepository;
 import pl.dotnet.main.dao.repository.UserRepository;
@@ -22,6 +19,7 @@ import pl.dotnet.main.mapper.TicketMapper;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -200,5 +198,76 @@ public class EventService {
                 .filter(ticket -> ticket.getUser().equals(user))
                 .collect(Collectors.toSet());
         return !tickets.isEmpty();
+    }
+
+    public boolean getPresence(Long eventId) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException("Event not found"));
+        userService.isCurrentUserNotTheOwnerOfThisEvent(event);
+
+        List<Ticket> registeredUsers = event.getRegisteredUsers();
+        List<Ticket> attendedUsers = event.getAttendedUsers();
+
+        Map<String, Boolean> eventPresence = registeredUsers.stream()
+                .collect(Collectors.toMap(Ticket::getUuid, attendedUsers::contains, (a, b) -> b));
+
+        log.info(eventPresence.toString());
+
+        Map<Long, Map<String, Boolean>> lecturePresence = event.getLectures().stream()
+                .collect(Collectors.toMap(Lecture::getLectureId, lecture -> registeredUsers.stream()
+                        .collect(Collectors.toMap(Ticket::getUuid, ticket -> lecture.getAttendedUsers().contains(ticket), (a, b) -> b)), (a1, b1) -> b1));
+
+        log.info(lecturePresence.toString());
+
+//        Workbook workbook = new XSSFWorkbook();
+//
+//        Sheet sheet = workbook.createSheet("getPresence");
+//        sheet.setColumnWidth(0, 6000);
+//        sheet.setColumnWidth(1, 4000);
+//
+//        Row header = sheet.createRow(0);
+//
+//        CellStyle headerStyle = workbook.createCellStyle();
+//        headerStyle.setFillForegroundColor(IndexedColors.LIGHT_BLUE.getIndex());
+//        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//
+//        XSSFFont font = ((XSSFWorkbook) workbook).createFont();
+//        font.setFontName("Arial");
+//        font.setFontHeightInPoints((short) 16);
+//        font.setBold(true);
+//        headerStyle.setFont(font);
+//
+//        Cell headerCell = header.createCell(0);
+//        headerCell.setCellValue("Name");
+//        headerCell.setCellStyle(headerStyle);
+//
+//        headerCell = header.createCell(1);
+//        headerCell.setCellValue("Age");
+//        headerCell.setCellStyle(headerStyle);
+//
+//        CellStyle style = workbook.createCellStyle();
+//        style.setWrapText(true);
+//
+//        Row row = sheet.createRow(2);
+//        Cell cell = row.createCell(0);
+//        cell.setCellValue("John Smith");
+//        cell.setCellStyle(style);
+//
+//        cell = row.createCell(1);
+//        cell.setCellValue(20);
+//        cell.setCellStyle(style);
+//
+//        File currDir = new File(".");
+//        String path = currDir.getAbsolutePath();
+//        String fileLocation = path.substring(0, path.length() - 1) + "temp.xlsx";
+//
+//        try{
+//            FileOutputStream outputStream = new FileOutputStream(fileLocation);
+//            workbook.write(outputStream);
+//            workbook.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        return true;
     }
 }
