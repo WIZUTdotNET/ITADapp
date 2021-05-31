@@ -2,6 +2,7 @@ package pl.dotnet.main.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -200,5 +201,17 @@ public class EventService {
                 .filter(ticket -> ticket.getUser().equals(user))
                 .collect(Collectors.toSet());
         return !tickets.isEmpty();
+    }
+
+    public ByteArrayResource getPresence(Long eventId) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundRequestException("Event not found"));
+        userService.isCurrentUserNotTheOwnerOfThisEvent(event);
+
+        List<String> list = new java.util.ArrayList<>(List.of("Imie", "Nazwisko"));
+        list.add(event.getName());
+        event.getLectures().forEach(lecture -> list.add(lecture.getName()));
+
+        ReportGenerator build = ReportGenerator.builder().sheetName(event.getName() + "_" + eventId).headers(list).build();
+        return build.createReport(event);
     }
 }

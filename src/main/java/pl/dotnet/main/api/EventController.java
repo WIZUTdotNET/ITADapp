@@ -2,6 +2,10 @@ package pl.dotnet.main.api;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.dotnet.main.dto.Event.*;
@@ -79,7 +83,16 @@ public class EventController {
     }
 
     @GetMapping("/isCurrentUserRegistered")
-    public boolean isCurrentUserRegistered(@RequestParam Long eventID){
-        return eventService.isCurrentUserRegistered(eventID);
+    public boolean isCurrentUserRegistered(@RequestParam Long eventId) {
+        return eventService.isCurrentUserRegistered(eventId);
+    }
+
+    @GetMapping("/presence")
+    public ResponseEntity<Resource> getPresence(@RequestParam Long eventId) {
+        ByteArrayResource resource = eventService.getPresence(eventId);
+        return ResponseEntity.ok()
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .body(resource);
     }
 }
